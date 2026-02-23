@@ -1,0 +1,146 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "retry": "Retry",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "Home",
+    "network": "Network",
+    "opportunities": "Opportunities",
+    "messages": "Messages",
+    "alerts": "Alerts",
+    "weather": "Weather",
+    "market": "Market",
+    "cropDoctor": "Crop Doctor",
+    "profile": "Profile",
+    "settings": "Settings",
+    "login": "Log in",
+    "logout": "Log out",
+    "jobs": "Jobs"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "account": "Account",
+    "notifications": "Notifications",
+    "privacy": "Privacy & Security",
+    "preferences": "Preferences",
+    "dangerZone": "Danger Zone",
+    "preferencesSubtitle": "Customize your KrishiConnect experience",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language",
+    "location": "Location",
+    "locationPlaceholder": "City, State",
+    "locationHint": "Used for local weather & market price alerts",
+    "savePreferences": "Save Preferences",
+    "saving": "Saving...",
+    "preferencesSaved": "Preferences saved!",
+    "preferencesSaveFailed": "Failed to save preferences",
+    "darkModeHint": "Dark mode will apply globally once your backend updates the preference"
+  },
+  "profile": {
+    "title": "Profile",
+    "posts": "Posts",
+    "saved": "Saved",
+    "followers": "Followers",
+    "following": "Following",
+    "editProfile": "Edit Profile",
+    "noPosts": "No posts yet",
+    "noPostsHint": "Share your farming experiences!",
+    "noSavedPosts": "No saved posts",
+    "noSavedPostsHint": "Bookmark posts to see them here",
+    "share": "Share",
+    "follow": "Follow",
+    "followingBtn": "Following",
+    "chat": "Chat",
+    "profileViews": "Profile Views"
+  },
+  "home": {
+    "title": "Feed",
+    "sharePlaceholder": "Share your farming tips...",
+    "post": "Post",
+    "createPost": "Create post",
+    "noPosts": "No posts yet",
+    "noPostsHint": "Follow other farmers or create your first post!",
+    "trending": "Trending",
+    "recent": "Recent"
+  },
+  "post": {
+    "translate": "Translate",
+    "showOriginal": "Show original",
+    "showTranslated": "Show translated",
+    "more": "more",
+    "showLess": "Show less",
+    "deletePost": "Delete Post",
+    "reportPost": "Report Post",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "verified": "Verified Farmer",
+    "translating": "Translating...",
+    "translationFailed": "Translation failed"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your connection.",
+    "unauthorized": "Please log in to continue.",
+    "notFound": "Page not found.",
+    "serverError": "Server error. Try again later."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "emptyHint": "When someone likes or comments, you'll see it here.",
+    "markAllRead": "Mark all as read"
+  },
+  "login": {
+    "title": "Log in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log in",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "register": {
+    "title": "Sign up",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Create account",
+    "hasAccount": "Already have an account?",
+    "logIn": "Log in"
+  },
+  "opportunities": {
+    "title": "Opportunities",
+    "jobs": "Jobs",
+    "empty": "No opportunities right now",
+    "apply": "Apply"
+  },
+  "messages": {
+    "title": "Messages",
+    "empty": "No conversations yet",
+    "emptyHint": "Connect with farmers to start chatting",
+    "searchPlaceholder": "Search conversations...",
+    "typePlaceholder": "Type a message...",
+    "welcome": "Welcome to KrishiConnect Messages",
+    "selectConversation": "Select a conversation to start chatting with farmers"
+  },
+  "weather": {
+    "title": "Weather",
+    "current": "Current weather",
+    "forecast": "Forecast"
+  },
+  "market": {
+    "title": "Market",
+    "prices": "Prices",
+    "commodity": "Commodity",
+    "price": "Price"
+  }
+}

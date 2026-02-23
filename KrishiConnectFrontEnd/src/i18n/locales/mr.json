@@ -1,0 +1,146 @@
+{
+  "common": {
+    "save": "जतन करा",
+    "cancel": "रद्द",
+    "loading": "लोड होत आहे...",
+    "error": "त्रुटी",
+    "success": "यश",
+    "retry": "पुन्हा प्रयत्न",
+    "close": "बंद"
+  },
+  "nav": {
+    "home": "मुख्यपृष्ठ",
+    "network": "नेटवर्क",
+    "opportunities": "संधी",
+    "messages": "संदेश",
+    "alerts": "अलर्ट",
+    "weather": "हवामान",
+    "market": "बाजार",
+    "cropDoctor": "क्रॉप डॉक्टर",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "login": "लॉग इन",
+    "logout": "लॉग आउट",
+    "jobs": "नोकऱ्या"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "profile": "प्रोफाइल",
+    "account": "खाते",
+    "notifications": "सूचना",
+    "privacy": "गोपनीयता आणि सुरक्षा",
+    "preferences": "प्राधान्ये",
+    "dangerZone": "धोका क्षेत्र",
+    "preferencesSubtitle": "तुमचा KrishiConnect अनुभव सानुकूलित करा",
+    "theme": "थीम",
+    "themeLight": "हलका",
+    "themeDark": "डार्क",
+    "language": "भाषा",
+    "location": "स्थान",
+    "locationPlaceholder": "शहर, राज्य",
+    "locationHint": "स्थानिक हवामान आणि बाजार किंमत अलर्टसाठी वापरले",
+    "savePreferences": "प्राधान्ये जतन करा",
+    "saving": "जतन होत आहे...",
+    "preferencesSaved": "प्राधान्ये जतन झाली!",
+    "preferencesSaveFailed": "प्राधान्ये जतन करण्यात अयशस्वी",
+    "darkModeHint": "तुमचा बॅकएंड प्राधान्य अपडेट केल्यावर डार्क मोड ग्लोबल लागू होईल"
+  },
+  "profile": {
+    "title": "प्रोफाइल",
+    "posts": "पोस्ट",
+    "saved": "जतन केलेले",
+    "followers": "फॉलोअर्स",
+    "following": "फॉलोइंग",
+    "editProfile": "प्रोफाइल संपादित करा",
+    "noPosts": "अद्याप पोस्ट नाहीत",
+    "noPostsHint": "तुमचे शेती अनुभव शेअर करा!",
+    "noSavedPosts": "जतन केलेले पोस्ट नाहीत",
+    "noSavedPostsHint": "त्यांना येथे पाहण्यासाठी पोस्ट बुकमार्क करा",
+    "share": "शेअर करा",
+    "follow": "फॉलो करा",
+    "followingBtn": "फॉलो केले",
+    "chat": "चॅट",
+    "profileViews": "प्रोफाइल पाहणारे"
+  },
+  "home": {
+    "title": "फीड",
+    "sharePlaceholder": "तुमचे शेती टिप्स शेअर करा...",
+    "post": "पोस्ट",
+    "createPost": "पोस्ट तयार करा",
+    "noPosts": "अद्याप पोस्ट नाहीत",
+    "noPostsHint": "इतर शेतकऱ्यांना फॉलो करा किंवा पहिली पोस्ट तयार करा!",
+    "trending": "ट्रेंडिंग",
+    "recent": "अलीकडील"
+  },
+  "post": {
+    "translate": "भाषांतर करा",
+    "showOriginal": "मूळ दाखवा",
+    "showTranslated": "भाषांतर दाखवा",
+    "more": "अधिक",
+    "showLess": "कमी दाखवा",
+    "deletePost": "पोस्ट हटवा",
+    "reportPost": "पोस्ट रिपोर्ट करा",
+    "follow": "फॉलो करा",
+    "unfollow": "अनफॉलो",
+    "verified": "सत्यापित शेतकरी",
+    "translating": "भाषांतर होत आहे...",
+    "translationFailed": "भाषांतर अयशस्वी"
+  },
+  "errors": {
+    "generic": "काहीतरी चुकले. कृपया पुन्हा प्रयत्न करा.",
+    "network": "नेटवर्क त्रुटी. कनेक्शन तपासा.",
+    "unauthorized": "सुरू ठेवण्यासाठी लॉग इन करा.",
+    "notFound": "पृष्ठ सापडले नाही.",
+    "serverError": "सर्वर त्रुटी. नंतर पुन्हा प्रयत्न करा."
+  },
+  "notifications": {
+    "title": "सूचना",
+    "empty": "अद्याप सूचना नाहीत",
+    "emptyHint": "जेव्हा कोणी लाइक किंवा कमेंट करेल, ते येथे दिसेल.",
+    "markAllRead": "सर्व वाचले म्हणून चिन्हांकित करा"
+  },
+  "login": {
+    "title": "लॉग इन",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "submit": "लॉग इन",
+    "forgotPassword": "पासवर्ड विसरलात?",
+    "noAccount": "खाते नाही?",
+    "signUp": "साइन अप"
+  },
+  "register": {
+    "title": "साइन अप",
+    "name": "नाव",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "submit": "खाते तयार करा",
+    "hasAccount": "आधीपासून खाते आहे?",
+    "logIn": "लॉग इन"
+  },
+  "opportunities": {
+    "title": "संधी",
+    "jobs": "नोकऱ्या",
+    "empty": "अद्याप संधी नाहीत",
+    "apply": "अर्ज करा"
+  },
+  "messages": {
+    "title": "संदेश",
+    "empty": "अद्याप संभाषणे नाहीत",
+    "emptyHint": "चॅट सुरू करण्यासाठी शेतकऱ्यांशी जोडा",
+    "searchPlaceholder": "संभाषणे शोधा...",
+    "typePlaceholder": "संदेश टाइप करा...",
+    "welcome": "KrishiConnect संदेशात आपले स्वागत आहे",
+    "selectConversation": "शेतकऱ्यांशी चॅट सुरू करण्यासाठी संभाषण निवडा"
+  },
+  "weather": {
+    "title": "हवामान",
+    "current": "सध्याचे हवामान",
+    "forecast": "अंदाज"
+  },
+  "market": {
+    "title": "बाजार",
+    "prices": "किमती",
+    "commodity": "माल",
+    "price": "किंमत"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "common": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "retry": "पुनः प्रयास",
+    "close": "बंद करें"
+  },
+  "nav": {
+    "home": "होम",
+    "network": "नेटवर्क",
+    "opportunities": "अवसर",
+    "messages": "संदेश",
+    "alerts": "अलर्ट",
+    "weather": "मौसम",
+    "market": "बाजार",
+    "cropDoctor": "क्रॉप डॉक्टर",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "login": "लॉग इन",
+    "logout": "लॉग आउट",
+    "jobs": "नौकरियां"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "profile": "प्रोफाइल",
+    "account": "खाता",
+    "notifications": "सूचनाएं",
+    "privacy": "गोपनीयता और सुरक्षा",
+    "preferences": "प्राथमिकताएं",
+    "dangerZone": "खतरा क्षेत्र",
+    "preferencesSubtitle": "अपने KrishiConnect अनुभव को अनुकूलित करें",
+    "theme": "थीम",
+    "themeLight": "हल्का",
+    "themeDark": "डार्क",
+    "language": "भाषा",
+    "location": "स्थान",
+    "locationPlaceholder": "शहर, राज्य",
+    "locationHint": "स्थानीय मौसम और बाजार मूल्य अलर्ट के लिए उपयोग",
+    "savePreferences": "प्राथमिकताएं सहेजें",
+    "saving": "सहेज रहा है...",
+    "preferencesSaved": "प्राथमिकताएं सहेजी गईं!",
+    "preferencesSaveFailed": "प्राथमिकताएं सहेजने में विफल",
+    "darkModeHint": "डार्क मोड तब वैश्विक रूप से लागू होगा जब आपका बैकएंड प्राथमिकता अपडेट करे"
+  },
+  "profile": {
+    "title": "प्रोफाइल",
+    "posts": "पोस्ट",
+    "saved": "सहेजे गए",
+    "followers": "फॉलोअर्स",
+    "following": "फॉलोइंग",
+    "editProfile": "प्रोफाइल संपादित करें",
+    "noPosts": "अभी तक कोई पोस्ट नहीं",
+    "noPostsHint": "अपने कृषि अनुभव साझा करें!",
+    "noSavedPosts": "कोई सहेजी गई पोस्ट नहीं",
+    "noSavedPostsHint": "उन्हें यहां देखने के लिए पोस्ट बुकमार्क करें",
+    "share": "शेयर करें",
+    "follow": "फॉलो करें",
+    "followingBtn": "फॉलो किया",
+    "chat": "चैट",
+    "profileViews": "प्रोफाइल देखने वाले"
+  },
+  "home": {
+    "title": "फ़ीड",
+    "sharePlaceholder": "अपने कृषि टिप्स साझा करें...",
+    "post": "पोस्ट",
+    "createPost": "पोस्ट बनाएं",
+    "noPosts": "अभी कोई पोस्ट नहीं",
+    "noPostsHint": "अन्य किसानों को फॉलो करें या अपनी पहली पोस्ट बनाएं!",
+    "trending": "ट्रेंडिंग",
+    "recent": "हाल ही में"
+  },
+  "post": {
+    "translate": "अनुवाद करें",
+    "showOriginal": "मूल दिखाएं",
+    "showTranslated": "अनुवाद दिखाएं",
+    "more": "और",
+    "showLess": "कम दिखाएं",
+    "deletePost": "पोस्ट हटाएं",
+    "reportPost": "पोस्ट रिपोर्ट करें",
+    "follow": "फॉलो करें",
+    "unfollow": "अनफॉलो",
+    "verified": "सत्यापित किसान",
+    "translating": "अनुवाद हो रहा है...",
+    "translationFailed": "अनुवाद विफल"
+  },
+  "errors": {
+    "generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
+    "network": "नेटवर्क त्रुटि। कनेक्शन जांचें।",
+    "unauthorized": "जारी रखने के लिए लॉग इन करें।",
+    "notFound": "पृष्ठ नहीं मिला।",
+    "serverError": "सर्वर त्रुटि। बाद में पुनः प्रयास करें।"
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "empty": "अभी कोई सूचना नहीं",
+    "emptyHint": "जब कोई लाइक या कमेंट करेगा, यहां दिखेगा।",
+    "markAllRead": "सभी पढ़े हुए मार्क करें"
+  },
+  "login": {
+    "title": "लॉग इन",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "submit": "लॉग इन",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "noAccount": "खाता नहीं है?",
+    "signUp": "साइन अप"
+  },
+  "register": {
+    "title": "साइन अप",
+    "name": "नाम",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "submit": "खाता बनाएं",
+    "hasAccount": "पहले से खाता है?",
+    "logIn": "लॉग इन"
+  },
+  "opportunities": {
+    "title": "अवसर",
+    "jobs": "नौकरियां",
+    "empty": "अभी कोई अवसर नहीं",
+    "apply": "आवेदन करें"
+  },
+  "messages": {
+    "title": "संदेश",
+    "empty": "अभी कोई बातचीत नहीं",
+    "emptyHint": "चैट शुरू करने के लिए किसानों से जुड़ें",
+    "searchPlaceholder": "बातचीत खोजें...",
+    "typePlaceholder": "संदेश लिखें...",
+    "welcome": "KrishiConnect संदेश में आपका स्वागत है",
+    "selectConversation": "किसानों के साथ चैट शुरू करने के लिए बातचीत चुनें"
+  },
+  "weather": {
+    "title": "मौसम",
+    "current": "वर्तमान मौसम",
+    "forecast": "पूर्वानुमान"
+  },
+  "market": {
+    "title": "बाजार",
+    "prices": "कीमतें",
+    "commodity": "वस्तु",
+    "price": "कीमत"
+  }
+}
