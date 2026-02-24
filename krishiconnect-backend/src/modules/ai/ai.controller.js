@@ -11,10 +11,11 @@ const ask = asyncHandler(async (req, res) => {
   const userId = (user._id || user.id).toString();
   const question = req.body?.question;
   const model = req.body?.model || null;
+  const responseLanguage = user.preferences?.language || 'en';
   if (question == null || typeof question !== 'string') {
     throw new ApiError(400, 'Question is required.');
   }
-  const data = await aiService.ask(userId, question, model);
+  const data = await aiService.ask(userId, question, model, responseLanguage);
   res.status(200).json(new ApiResponse(200, data, 'OK'));
 });
 
@@ -30,10 +31,11 @@ const chat = asyncHandler(async (req, res) => {
   const userId = (user._id || user.id).toString();
   const message = req.body?.message;
   const model = req.body?.model || null;
+  const responseLanguage = user.preferences?.language || 'en';
   if (message == null || typeof message !== 'string') {
     throw new ApiError(400, 'Message is required.');
   }
-  const data = await aiService.ask(userId, message, model);
+  const data = await aiService.ask(userId, message, model, responseLanguage);
   res.status(200).json(
     new ApiResponse(200, {
       success: true,
@@ -54,6 +56,7 @@ const askStream = asyncHandler(async (req, res) => {
   const userId = (user._id || user.id).toString();
   const question = req.body?.question;
   const model = req.body?.model || null;
+  const responseLanguage = user.preferences?.language || 'en';
   if (question == null || typeof question !== 'string') {
     throw new ApiError(400, 'Question is required.');
   }
@@ -71,7 +74,7 @@ const askStream = asyncHandler(async (req, res) => {
   };
 
   try {
-    await aiService.askStream(userId, question, writeChunk, model);
+    await aiService.askStream(userId, question, writeChunk, model, responseLanguage);
     res.write('data: [DONE]\n\n');
   } catch (err) {
     const status = err.statusCode || err.status || 500;

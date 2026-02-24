@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader } from 'lucide-react';
+import { X, Send, Loader, Mic } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
 
 // ============================================================================
 // AI CHAT PANEL – KrishiConnect Assistant (Groq); streaming via POST /api/v1/ai/ask/stream
@@ -80,6 +82,35 @@ const AIChatPanel = ({ onClose, className = '' }) => {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  const {
+    transcript: voiceTranscript,
+    listening: voiceListening,
+    error: voiceError,
+    isSupported: voiceSupported,
+    startListening: voiceStart,
+    stopListening: voiceStop,
+    resetTranscript: voiceReset,
+  } = useSpeechToText({ language: 'en-IN', continuous: false });
+
+  const voiceWasListeningRef = useRef(false);
+  useEffect(() => {
+    if (voiceListening) {
+      voiceWasListeningRef.current = true;
+      return;
+    }
+    if (voiceWasListeningRef.current && voiceTranscript.trim()) {
+      setInputValue((prev) => (prev ? `${prev} ${voiceTranscript.trim()}` : voiceTranscript.trim()).slice(0, MAX_QUESTION_LENGTH));
+      voiceReset();
+    }
+    voiceWasListeningRef.current = false;
+  }, [voiceListening, voiceTranscript, voiceReset]);
+
+  useEffect(() => {
+    if (!voiceError) return;
+    const msg = getSpeechRecognitionErrorMessage(voiceError);
+    if (msg) toast.error(msg);
+  }, [voiceError]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -244,6 +275,18 @@ const AIChatPanel = ({ onClose, className = '' }) => {
             className="flex-1 min-w-0 px-3 py-2.5 text-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 transition"
             disabled={loading}
           />
+          {voiceSupported && (
+            <button
+              type="button"
+              onClick={() => (voiceListening ? voiceStop() : voiceStart())}
+              disabled={loading}
+              className="p-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition flex-shrink-0"
+              title={voiceListening ? 'Stop listening' : 'Voice input'}
+              aria-label={voiceListening ? 'Stop listening' : 'Voice input'}
+            >
+              <Mic size={18} className={voiceListening ? 'text-green-600 dark:text-green-400' : ''} />
+            </button>
+          )}
           <button
             type="button"
             onClick={handleSend}

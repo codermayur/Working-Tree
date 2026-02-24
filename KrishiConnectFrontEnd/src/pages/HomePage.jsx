@@ -6,7 +6,7 @@ import {
   MessageSquare, Bell, User, Settings, MoreHorizontal, TrendingUp, Droplet,
   Wind, X, Upload, Loader, Edit3, Award, MapPin, LinkIcon, Eye,
   ChevronDown, ChevronUp, Menu, ArrowRight, Plus, Flag, CheckCircle,
-  AlertCircle, RefreshCw, Send, Image, FileText, Sparkles, HelpCircle, Languages
+  AlertCircle, RefreshCw, Send, Image, FileText, Sparkles, HelpCircle, Languages, Mic
 } from 'lucide-react';
 import { postService } from '../services/post.service';
 import { userService } from '../services/user.service';
@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import AIChatPanel from '../components/AIChatPanel';
 import { useTranslatePost } from '../hooks/useTranslatePost';
 import { useWeather, INDIAN_CITIES } from '../hooks/useWeather';
+import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
 
 // ============================================================================
 // API: postService + userService; demo fallback for weather/market/news
@@ -1766,6 +1767,36 @@ const HomePage = () => {
   const searchWrapperRef = useRef(null);
   const searchDebounceRef = useRef(null);
 
+  const {
+    transcript: searchVoiceTranscript,
+    listening: searchVoiceListening,
+    error: searchVoiceError,
+    isSupported: searchVoiceSupported,
+    startListening: searchVoiceStart,
+    stopListening: searchVoiceStop,
+    resetTranscript: searchVoiceReset,
+  } = useSpeechToText({ language: 'en-IN', continuous: false });
+
+  const searchVoiceWasListeningRef = useRef(false);
+  useEffect(() => {
+    if (searchVoiceListening) {
+      searchVoiceWasListeningRef.current = true;
+      return;
+    }
+    if (searchVoiceWasListeningRef.current && searchVoiceTranscript.trim()) {
+      setSearchQuery(searchVoiceTranscript.trim());
+      setSearchDropdownOpen(true);
+      searchVoiceReset();
+    }
+    searchVoiceWasListeningRef.current = false;
+  }, [searchVoiceListening, searchVoiceTranscript, searchVoiceReset]);
+
+  useEffect(() => {
+    if (!searchVoiceError) return;
+    const msg = getSpeechRecognitionErrorMessage(searchVoiceError);
+    if (msg) toast.error(msg);
+  }, [searchVoiceError]);
+
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
@@ -1873,12 +1904,12 @@ const HomePage = () => {
       )}
 
       {/* Main content wrapper */}
-      <div style={{ transition: 'margin-left 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }} className="main-content">
+      <div style={{ transition: 'margin-left 0.28s cubic-bezier(0.16, 1, 0.3, 1)' }} className="main-content overflow-x-hidden">
 
         {/* ── Top Bar ── */}
-        <div className="sticky top-0 z-30 flex items-center gap-[14px] px-6 h-16 backdrop-blur-[16px] border-b border-gray-200 dark:border-gray-700 bg-white/92 dark:bg-gray-800/92 shadow-[0_1px_0_rgb(0_0_0/0.04)] transition-colors duration-200 topbar-desktop">
+        <div className="sticky top-0 z-30 flex items-center gap-3 sm:gap-[14px] px-4 sm:px-6 h-16 min-w-0 backdrop-blur-[16px] border-b border-gray-200 dark:border-gray-700 bg-white/92 dark:bg-gray-800/92 shadow-[0_1px_0_rgb(0_0_0/0.04)] transition-colors duration-200 topbar-desktop">
           {/* Search */}
-          <div ref={searchWrapperRef} className="flex-1 max-w-[400px] relative">
+          <div ref={searchWrapperRef} className="flex-1 min-w-0 max-w-[400px] relative">
             <Search size={15} className="absolute left-[14px] top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none" />
             <input
               type="search"
@@ -1886,9 +1917,20 @@ const HomePage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchDropdownOpen(true)}
-              className="input-base w-full pl-10 pr-4 py-2 text-[13px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 transition-colors"
+              className="input-base w-full pl-10 pr-10 py-2 text-[13px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 transition-colors"
               style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}
             />
+            {searchVoiceSupported && (
+              <button
+                type="button"
+                onClick={() => (searchVoiceListening ? searchVoiceStop() : searchVoiceStart())}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                title={searchVoiceListening ? 'Stop listening' : 'Voice search'}
+                aria-label={searchVoiceListening ? 'Stop listening' : 'Voice search'}
+              >
+                <Mic size={16} className={searchVoiceListening ? 'text-green-600 dark:text-green-400' : ''} />
+              </button>
+            )}
             {searchDropdownOpen && (searchQuery.trim() || searchResults.length > 0 || searchLoading) && (
               <div className="absolute top-full left-0 right-0 mt-1 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50 max-h-[280px] overflow-y-auto">
                 {searchLoading ? (
@@ -1930,7 +1972,7 @@ const HomePage = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-2.5 ml-auto">
+          <div className="flex items-center gap-2 sm:gap-2.5 ml-auto flex-shrink-0">
             {/* Notification bell */}
             <button
               type="button"
@@ -1955,9 +1997,8 @@ const HomePage = () => {
         </div>
 
         {/* ── Page content (centered, wider for less compressed cards) ── */}
-        <div className="max-w-[1320px] mx-auto px-5 py-6">
-          {/* <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20, alignItems: 'start' }} className="content-grid"> */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', columnGap: 20, rowGap: 0, alignItems: 'start' }} className="content-grid">
+        <div className="max-w-[1320px] mx-auto px-4 sm:px-5 py-4 sm:py-6 w-full min-w-0">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', columnGap: 20, rowGap: 20, alignItems: 'start' }} className="content-grid">
             {/* AI Assistant (left) — guidance & doubt solving; hidden on mobile, shown from 768px */}
             <div className="profile-col hidden md:block" style={{ minWidth: 280 }}>
               <div style={{ position: 'sticky', top: 80 }}>
@@ -2020,9 +2061,9 @@ const HomePage = () => {
             </div>
 
             {/* Feed */}
-            <div className="feed-col" style={{ minWidth: 0 }}>
+            <div className="feed-col min-w-0 w-full">
               {/* Mobile header */}
-              <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4 mb-3 shadow-sm mobile-header transition-colors duration-200">
+              <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-3 sm:p-4 mb-3 shadow-sm mobile-header transition-colors duration-200">
                 <span className="font-semibold text-lg text-green-700 dark:text-green-400" style={{ fontFamily: 'Lora, Georgia, serif' }}>
                   🌾 KrishiConnect
                 </span>
@@ -2198,16 +2239,19 @@ const HomePage = () => {
         .content-grid {
           grid-template-columns: 1fr !important;
           align-items: start !important;
+          row-gap: 20px !important;
         }
         @media (min-width: 768px) {
           .content-grid {
-            grid-template-columns: 260px 1fr !important;
+            grid-template-columns: 280px 1fr !important;
+            column-gap: 24px !important;
           }
           .profile-col { display: block !important; }
         }
         @media (min-width: 1280px) {
           .content-grid {
-            grid-template-columns: 260px 1fr 320px !important;
+            grid-template-columns: 280px 1fr 320px !important;
+            column-gap: 24px !important;
           }
           .right-col { display: block !important; }
         }

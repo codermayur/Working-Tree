@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Send, Paperclip, Image, Smile, Mic, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../../hooks/useSpeechToText';
 
 const DEFAULT_EMOJIS = [
   '😀', '😊', '😂', '❤️', '👍', '🙏', '🌾', '👋', '😅', '🔥',
@@ -36,6 +38,37 @@ export function MessageInput({
   onTyping,
 }) {
   const textareaRef = useRef(null);
+
+  const {
+    transcript: voiceTranscript,
+    listening: voiceListening,
+    error: voiceError,
+    isSupported: voiceSupported,
+    startListening: voiceStart,
+    stopListening: voiceStop,
+    resetTranscript: voiceReset,
+  } = useSpeechToText({ language: 'en-IN', continuous: false });
+
+  const voiceWasListeningRef = useRef(false);
+  useEffect(() => {
+    if (voiceListening) {
+      voiceWasListeningRef.current = true;
+      return;
+    }
+    if (voiceWasListeningRef.current && voiceTranscript.trim()) {
+      const newText = (value ? `${value} ${voiceTranscript.trim()}` : voiceTranscript.trim());
+      onChange(newText);
+      onTyping?.();
+      voiceReset();
+    }
+    voiceWasListeningRef.current = false;
+  }, [voiceListening, voiceTranscript, voiceReset, value, onChange, onTyping]);
+
+  useEffect(() => {
+    if (!voiceError) return;
+    const msg = getSpeechRecognitionErrorMessage(voiceError);
+    if (msg) toast.error(msg);
+  }, [voiceError]);
 
   useEffect(() => {
     const ta = inputRef?.current || textareaRef.current;
@@ -162,14 +195,29 @@ export function MessageInput({
           <Smile size={18} />
         </button>
 
-        {/* Voice placeholder */}
-        <button
-          type="button"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-500 dark:text-gray-400 transition flex-shrink-0 mb-0.5 opacity-60"
-          title="Voice message (coming soon)"
-        >
-          <Mic size={18} />
-        </button>
+        {voiceSupported ? (
+          <button
+            type="button"
+            onClick={() => (voiceListening ? voiceStop() : voiceStart())}
+            className={`p-2 rounded-xl transition flex-shrink-0 mb-0.5 ${
+              voiceListening
+                ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400'
+            }`}
+            title={voiceListening ? 'Stop listening' : 'Voice input'}
+            aria-label={voiceListening ? 'Stop listening' : 'Voice input'}
+          >
+            <Mic size={18} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-500 dark:text-gray-400 transition flex-shrink-0 mb-0.5 opacity-60"
+            title="Voice input not supported in this browser"
+          >
+            <Mic size={18} />
+          </button>
+        )}
 
         <button
           type="button"
