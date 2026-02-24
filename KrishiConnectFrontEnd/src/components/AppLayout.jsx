@@ -8,14 +8,12 @@ import { WeatherProvider } from '../context/WeatherContext';
 // ============================================================================
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [notificationCount] = useState(5); // TODO: Fetch from API
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-200 flex">
       <LeftSidebar
         open={sidebarOpen}
         setOpen={setSidebarOpen}
-        notificationCount={notificationCount}
       />
       {/* Main content: reserve space for fixed sidebar so it never overlaps */}
       <main

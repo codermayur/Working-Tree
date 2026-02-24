@@ -147,7 +147,11 @@ const toggleLike = async (postId, userId) => {
   post.likes = likeIds;
   await post.save();
 
-  return { liked, likesCount: post.likesCount };
+  return {
+    liked,
+    likesCount: post.likesCount,
+    authorId: post.author,
+  };
 };
 
 const addComment = async (postId, userId, { content }) => {
@@ -167,7 +171,7 @@ const addComment = async (postId, userId, { content }) => {
   await Post.findByIdAndUpdate(postId, { $inc: { commentsCount: 1 } });
 
   await comment.populate('author', AUTHOR_SELECT);
-  return comment;
+  return { comment, authorId: post.author };
 };
 
 const getComments = async (postId, options = {}) => {

@@ -299,6 +299,18 @@ async function isParticipant(conversationId, userId) {
   return !!conv;
 }
 
+/**
+ * Get the other participant's user id in a direct conversation (for notification recipient).
+ */
+async function getOtherParticipant(conversationId, excludeUserId) {
+  const conv = await Conversation.findById(conversationId).select('participants.user').lean();
+  if (!conv || !conv.participants?.length) return null;
+  const other = conv.participants.find(
+    (p) => p.user && String(p.user) !== String(excludeUserId)
+  );
+  return other?.user || null;
+}
+
 const EDIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 async function markAsSeen(conversationId, userId) {
@@ -388,6 +400,7 @@ module.exports = {
   getMessages,
   createMessage,
   isParticipant,
+  getOtherParticipant,
   markAsSeen,
   markAsDelivered,
   addReaction,

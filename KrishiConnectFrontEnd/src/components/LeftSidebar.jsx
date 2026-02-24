@@ -1,13 +1,13 @@
 import React, { memo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Users, Briefcase, MessageSquare, Bell, User, Settings, Menu, ChevronDown, ChevronUp, LogIn, CloudRain, BarChart2, Leaf } from 'lucide-react';
+import { Home, Users, Briefcase, MessageSquare, AlertCircle, User, Settings, Menu, LogIn, CloudRain, BarChart2, Leaf } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 // ============================================================================
 // LEFT SIDEBAR COMPONENT
 // ============================================================================
-const LeftSidebar = ({ open, setOpen, notificationCount = 0 }) => {
+const LeftSidebar = ({ open, setOpen }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,7 +22,7 @@ const LeftSidebar = ({ open, setOpen, notificationCount = 0 }) => {
     { id: 'network', icon: Users, labelKey: 'nav.network', route: '/network' },
     { id: 'jobs', icon: Briefcase, labelKey: 'nav.opportunities', badge: 'New', route: '/opportunities' },
     { id: 'messages', icon: MessageSquare, labelKey: 'nav.messages', route: '/messages' },
-    { id: 'notifications', icon: Bell, labelKey: 'nav.alerts', badge: notificationCount > 0 ? notificationCount : null, route: '/alerts' },
+    { id: 'notifications', icon: AlertCircle, labelKey: 'nav.alerts', route: '/alerts' },
     { id: 'weather', icon: CloudRain, labelKey: 'nav.weather', route: '/weather' },
     { id: 'market', icon: BarChart2, labelKey: 'nav.market', route: '/market' },
     { id: 'cropDoctor', icon: Leaf, labelKey: 'nav.cropDoctor', route: '/crop-doctor' },
@@ -58,14 +58,16 @@ const LeftSidebar = ({ open, setOpen, notificationCount = 0 }) => {
         className={`hidden lg:flex flex-col fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 z-40 transition-all duration-300 ${open ? 'w-60' : 'w-20'} overflow-hidden shadow-sm`}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between min-h-[64px]">
-          {open && <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap">🌾 KrishiConnect</span>}
-          <button
-            onClick={() => setOpen(!open)}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 dark:text-gray-400 flex-shrink-0 ml-auto"
-          >
-            <Menu size={18} />
-          </button>
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between min-h-[64px] gap-2">
+          {open && <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap truncate">🌾 KrishiConnect</span>}
+          <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
+            <button
+              onClick={() => setOpen(!open)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 dark:text-gray-400"
+            >
+              <Menu size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}

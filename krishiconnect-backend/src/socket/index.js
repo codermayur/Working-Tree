@@ -41,6 +41,7 @@ function initializeSocket(server) {
   io.on('connection', (socket) => {
     logger.info('User connected:', socket.userId);
     socket.join(socket.userId);
+    socket.join(`user:${socket.userId}`);
     socket.broadcast.emit('user:online', { userId: socket.userId });
 
     socket.on('conversation:join', (payload) => {

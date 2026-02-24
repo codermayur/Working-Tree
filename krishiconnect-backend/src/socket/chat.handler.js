@@ -2,6 +2,9 @@
  * Socket handlers for chat: conversation join, message send, typing, read, reaction, edit, unsend.
  */
 const chatService = require('../modules/chat/chat.service');
+const notificationService = require('../modules/notification/notification.service');
+const notificationSocket = require('../modules/notification/notification.socket');
+const { getIO } = require('../socket');
 const { messageRateLimit } = require('./rateLimit');
 const logger = require('../config/logger');
 
@@ -52,6 +55,33 @@ async function handleMessageSend(io, socket, data) {
       replyToId || null
     );
     io.to(conversationId).emit('message:new', message);
+
+    setImmediate(() => {
+      chatService.getOtherParticipant(conversationId, socket.userId).then((recipientId) => {
+        if (!recipientId) return;
+        notificationService.create({
+          recipient: recipientId,
+          sender: socket.userId,
+          type: 'message',
+          entityId: conversationId,
+          entityType: 'conversation',
+          message: 'sent you a message',
+          metadata: { conversationId, messageId: message._id },
+        }).then((created) => {
+          if (created) {
+            try {
+              const ioInstance = getIO();
+              notificationSocket.emitNewNotification(
+                ioInstance,
+                created.notification.recipient,
+                created.notification,
+                created.unreadCount
+              );
+            } catch (_) {}
+          }
+        }).catch(() => {});
+      }).catch(() => {});
+    });
   } catch (err) {
     logger.error('[socket] message:send', err);
     socket.emit('error', { message: err.message || 'Failed to send message' });

@@ -56,6 +56,19 @@ const aiLimiter = rateLimit({
   },
 });
 
+// Notification list: rate-limit fetch to avoid abuse.
+const notificationListLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: isTesting ? 1000 : 60,
+  message: { success: false, message: 'Too many notification requests.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const id = req.user?._id ?? req.user?.id;
+    return id ? String(id) : (req.ip || 'anonymous');
+  },
+});
+
 module.exports = {
   generalLimiter,
   authLimiter,
@@ -63,4 +76,5 @@ module.exports = {
   forgotPasswordLimiter,
   uploadLimiter,
   aiLimiter,
+  notificationListLimiter,
 };

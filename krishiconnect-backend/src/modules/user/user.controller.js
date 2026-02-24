@@ -1,6 +1,9 @@
 const userService = require('./user.service');
 const postService = require('../post/post.service');
 const chatService = require('../chat/chat.service');
+const notificationService = require('../notification/notification.service');
+const notificationSocket = require('../notification/notification.socket');
+const { getIO } = require('../../socket');
 const ApiResponse = require('../../utils/ApiResponse');
 const ApiError = require('../../utils/ApiError');
 const asyncHandler = require('../../utils/asyncHandler');
@@ -121,6 +124,31 @@ const searchUsers = asyncHandler(async (req, res) => {
 const followUser = asyncHandler(async (req, res) => {
   await userService.followUser(req.user._id, req.params.userId);
   res.status(200).json(new ApiResponse(200, { success: true }, 'User followed successfully'));
+  setImmediate(() => {
+    notificationService
+      .create({
+        recipient: req.params.userId,
+        sender: req.user._id,
+        type: 'follow',
+        entityId: req.user._id,
+        entityType: 'user',
+        message: 'started following you',
+      })
+      .then((created) => {
+        if (created) {
+          try {
+            const io = getIO();
+            notificationSocket.emitNewNotification(
+              io,
+              created.notification.recipient,
+              created.notification,
+              created.unreadCount
+            );
+          } catch (_) {}
+        }
+      })
+      .catch(() => {});
+  });
 });
 
 const unfollowUser = asyncHandler(async (req, res) => {
