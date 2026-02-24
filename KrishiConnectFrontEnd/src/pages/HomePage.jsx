@@ -18,6 +18,7 @@ import AIChatPanel from '../components/AIChatPanel';
 import { useTranslatePost } from '../hooks/useTranslatePost';
 import { useWeather, INDIAN_CITIES } from '../hooks/useWeather';
 import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
+import { useWeatherCoords } from '../context/WeatherContext';
 
 // ============================================================================
 // API: postService + userService; demo fallback for weather/market/news
@@ -1492,23 +1493,13 @@ function getWeatherTip(cw) {
 
 const RightSidebar = () => {
   const navigate = useNavigate();
-  const [coords, setCoords] = useState(() => INDIAN_CITIES[0]);
+  const { coords } = useWeatherCoords();
   const { currentWeather, location, isLoading: weatherLoading } = useWeather(coords);
   const [prices, setPrices] = useState([]);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAllNews, setShowAllNews] = useState(false);
   const [pricesRefreshing, setPricesRefreshing] = useState(false);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-        () => {},
-        { timeout: 5000, maximumAge: 300000 }
-      );
-    }
-  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -1526,7 +1517,7 @@ const RightSidebar = () => {
     const temp = currentWeather.temperature != null ? Math.round(Number(currentWeather.temperature)) : null;
     const humidity = currentWeather.humidity != null ? Math.round(Number(currentWeather.humidity)) : null;
     const wind = currentWeather.windSpeed != null ? Math.round(Number(currentWeather.windSpeed)) : null;
-    const city = location ? [location.city, location.area].filter(Boolean).join(', ') || '—' : '—';
+    const city = location ? [location.city, location.area, location.country].filter(Boolean).join(', ') || '—' : '—';
     return {
       icon: WEATHER_EMOJI[currentWeather.weatherCode] ?? '⛅',
       temp: temp ?? '—',

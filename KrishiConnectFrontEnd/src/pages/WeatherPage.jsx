@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, RefreshCw, Navigation, AlertCircle } from 'lucide-react';
 import { useWeather, forwardGeocode, INDIAN_CITIES } from '../hooks/useWeather';
+import { useWeatherCoords } from '../context/WeatherContext';
 import {
   AlertBanner,
   HeroCard,
@@ -44,7 +45,7 @@ const PERMISSION_BANNER = {
 };
 
 export default function WeatherPage() {
-  const [coords, setCoords] = useState(null);
+  const { coords, setCoords } = useWeatherCoords();
   const [locationDenied, setLocationDenied] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const [searchInput, setSearchInput] = useState('');
@@ -87,48 +88,7 @@ export default function WeatherPage() {
       },
       { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
     );
-  }, []);
-
-  useEffect(() => {
-    if (coords) return;
-    if (!navigator.geolocation) {
-      setLocationDenied(true);
-      setCoords({ lat: INDIAN_CITIES[0].lat, lon: INDIAN_CITIES[0].lon });
-      return;
-    }
-    const getLocation = async () => {
-      if ('permissions' in navigator) {
-        try {
-          const permission = await navigator.permissions.query({ name: 'geolocation' });
-          if (permission.state === 'denied') {
-            setLocationError('blocked');
-            setLocationDenied(true);
-            setCoords({ lat: INDIAN_CITIES[0].lat, lon: INDIAN_CITIES[0].lon });
-            return;
-          }
-          permission.onchange = () => {
-            if (permission.state === 'granted') triggerLocationFetch();
-          };
-        } catch (_) {}
-      }
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setCoords({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-          setLocationDenied(false);
-          setLocationError(null);
-        },
-        (err) => {
-          if (err.code === 1) setLocationError('denied');
-          else if (err.code === 2) setLocationError('unavailable');
-          else if (err.code === 3) setLocationError('timeout');
-          setLocationDenied(true);
-          setCoords({ lat: INDIAN_CITIES[0].lat, lon: INDIAN_CITIES[0].lon });
-        },
-        { timeout: 8000, maximumAge: 300000, enableHighAccuracy: false }
-      );
-    };
-    getLocation();
-  }, [coords, triggerLocationFetch]);
+  }, [setCoords]);
 
   const setCoordsFromQuery = useCallback(async (query, setLoading) => {
     const q = query?.trim();
@@ -149,7 +109,7 @@ export default function WeatherPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setCoords]);
 
   const handleSearch = useCallback((e) => {
     e?.preventDefault();
@@ -162,7 +122,7 @@ export default function WeatherPage() {
       const c = INDIAN_CITIES.find((x) => x.name === v);
       if (c) setCoords({ lat: c.lat, lon: c.lon });
     }
-  }, []);
+  }, [setCoords]);
 
   const locationName = location ? [location.city, location.area, location.country].filter(Boolean).join(', ') : currentWeather?.location;
   const lastUpdatedMins = lastUpdated ? Math.round((Date.now() - lastUpdated) / 60000) : null;
