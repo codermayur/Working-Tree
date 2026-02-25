@@ -14,7 +14,12 @@ const BACKGROUND_PRESET_COLORS = {
   custom: null,
 };
 
-const DEFAULT_PROFILE_PHOTO = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop';
+// Inline placeholder to avoid external image request and ERR_CERT_AUTHORITY_INVALID (e.g. Unsplash)
+const DEFAULT_PROFILE_PHOTO =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/><text x="50" y="58" font-size="40" fill="%239ca3af" text-anchor="middle" dominant-baseline="middle">?</text></svg>'
+  );
 
 /**
  * Map backend user to profile page shape.
@@ -33,7 +38,7 @@ export function mapUserToProfile(raw, currentUserId) {
   const coverPhoto =
     raw.background?.url ||
     (raw.backgroundPreset && BACKGROUND_PRESET_COLORS[raw.backgroundPreset]) ||
-    'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&h=400&fit=crop';
+    'linear-gradient(135deg, #16a34a 0%, #15803d 100%)';
   const profilePhotoUrl =
     raw.profilePhoto?.url || raw.avatar?.url || DEFAULT_PROFILE_PHOTO;
   const stats = raw.stats || {};
@@ -68,6 +73,8 @@ export function mapUserToProfile(raw, currentUserId) {
     isOwnProfile: currentUserId ? String(raw._id) === String(currentUserId) : false,
     isFollowing: !!raw.isFollowing,
     isBlockedByMe: !!raw.isBlockedByMe,
+    role: raw.role,
+    badges: raw.badges || {},
   };
 }
 

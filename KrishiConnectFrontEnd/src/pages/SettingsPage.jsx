@@ -6,7 +6,7 @@ import {
   Camera, Eye, EyeOff, Check, X, Loader, AlertCircle, RefreshCw,
   CheckCircle, LogOut, Trash2, ChevronRight, Globe, MapPin,
   Moon, Sun, Smartphone, Mail, MessageSquare, UserX, Plus,
-  Save, Key, ToggleLeft, ToggleRight, Info
+  Save, Key, ToggleLeft, ToggleRight, Info, Award
 } from 'lucide-react';
 import { authStore } from '../store/authStore';
 import { userService } from '../services/user.service';
@@ -15,6 +15,8 @@ import { useTheme } from '../hooks/useTheme';
 import { useBlockedUsers, useUnblockUser } from '../hooks/usePrivacySecurity';
 import BlockedUsersList from '../components/privacy-security/BlockedUsersList';
 import { UnblockConfirmModal } from '../components/BlockModals';
+import { expertApplicationService, expertApplicationConstants } from '../services/expertApplication.service';
+import ExpertUpgradeSection from '../components/settings/ExpertUpgradeSection';
 
 // ============================================================================
 // ✅ API PLACEHOLDER FUNCTIONS
@@ -101,6 +103,13 @@ const settingsApi = {
 // ============================================================================
 // DEMO DATA — Remove when connected to real API
 // ============================================================================
+// Placeholder avatar (data URL) to avoid external image load and certificate errors
+const DEFAULT_AVATAR_DATA =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/><text x="50" y="58" font-size="40" fill="%239ca3af" text-anchor="middle" dominant-baseline="middle">?</text></svg>'
+  );
+
 const DEMO_SETTINGS = {
   profile: {
     name: 'Rajesh Kumar',
@@ -108,7 +117,7 @@ const DEMO_SETTINGS = {
     bio: 'Passionate about sustainable agriculture and helping fellow farmers grow better crops.',
     email: 'rajesh.kumar@gmail.com',
     phone: '+91 98765 43210',
-    profilePhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    profilePhoto: DEFAULT_AVATAR_DATA,
   },
   account: {
     isPublic: true,
@@ -131,8 +140,8 @@ const DEMO_SETTINGS = {
 };
 
 const DEMO_BLOCKED_USERS = [
-  { _id: 'b1', name: 'Unknown Spammer', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop', blockedSince: '2 weeks ago' },
-  { _id: 'b2', name: 'Fake Account 02', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop', blockedSince: '1 month ago' },
+  { _id: 'b1', name: 'Unknown Spammer', avatar: DEFAULT_AVATAR_DATA, blockedSince: '2 weeks ago' },
+  { _id: 'b2', name: 'Fake Account 02', avatar: DEFAULT_AVATAR_DATA, blockedSince: '1 month ago' },
 ];
 
 const LANGUAGES = [
@@ -147,6 +156,7 @@ const NAV_SECTIONS = [
   { id: 'notifications', icon: Bell,          labelKey: 'settings.notifications' },
   { id: 'privacy',       icon: Shield,        labelKey: 'settings.privacy' },
   { id: 'preferences',   icon: Sliders,       labelKey: 'settings.preferences' },
+  { id: 'expertUpgrade', icon: Award,         labelKey: 'settings.expertUpgrade' },
   { id: 'danger',        icon: AlertTriangle, labelKey: 'settings.dangerZone' },
 ];
 
@@ -933,6 +943,8 @@ const SettingsPage = () => {
   const [activeSection, setActiveSection] = useState('profile');
   const [toast, setToast]         = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [userForExpert, setUserForExpert] = useState(null);
+  const [myApplication, setMyApplication] = useState(null);
   const contentRef = useRef(null);
 
   // Load settings: real profile from API when authenticated, rest from stub
@@ -954,6 +966,13 @@ const SettingsPage = () => {
             bio: raw?.bio ?? '',
             profilePhoto: raw?.profilePhoto?.url ?? (typeof raw?.profilePhoto === 'string' ? raw.profilePhoto : DEMO_SETTINGS.profile.profilePhoto),
           };
+          setUserForExpert({ ...raw, role: raw?.role, roleUpgradeStatus: raw?.roleUpgradeStatus, name: raw?.name, email: raw?.email, phoneNumber: raw?.phoneNumber });
+          try {
+            const app = await expertApplicationService.getMyApplication();
+            setMyApplication(app || null);
+          } catch (_) {
+            setMyApplication(null);
+          }
         } catch (err) {
           if (err?.response?.status === 401) setError('Please log in to view settings.');
           else setError(err?.response?.data?.message || err?.message || 'Failed to load profile.');
@@ -1102,6 +1121,15 @@ const SettingsPage = () => {
                 {activeSection === 'preferences' && (
                   <PreferencesSection
                     data={settings.preferences}
+                    onToast={showToast}
+                  />
+                )}
+
+                {activeSection === 'expertUpgrade' && (
+                  <ExpertUpgradeSection
+                    user={userForExpert}
+                    myApplication={myApplication}
+                    onRefresh={loadSettings}
                     onToast={showToast}
                   />
                 )}

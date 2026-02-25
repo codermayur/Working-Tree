@@ -6,8 +6,12 @@ const errorHandler = (err, req, res, next) => {
   let error = err;
 
   if (!(error instanceof ApiError)) {
-    const statusCode = error.statusCode || 500;
-    const message = error.message || 'Internal Server Error';
+    const statusCode = error.statusCode || (error.name === 'MongoServerError' && error.code === 11000 ? 409 : 500);
+    const message = error.statusCode
+      ? error.message
+      : error.name === 'MongoServerError' && error.code === 11000
+        ? 'Resource already exists (duplicate key)'
+        : error.message || 'Internal Server Error';
     error = new ApiError(statusCode, message);
   }
 

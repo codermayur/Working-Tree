@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Leaf, Upload, Camera, Loader, AlertCircle, CheckCircle, AlertTriangle, RefreshCw } from 'lucide-react';
 import axios from 'axios';
+import { ExpertCard, ExpertChatModal } from '../components/experts';
+import { expertService } from '../services/expert.service';
 
 const CROP_DOCTOR_API = 'http://localhost:8000/predict';
 
@@ -15,6 +17,21 @@ const CropDoctor = () => {
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
   const captureInputRef = useRef(null);
+
+  const [experts, setExperts] = useState([]);
+  const [selectedExpert, setSelectedExpert] = useState(null);
+
+  useEffect(() => {
+    const loadExperts = async () => {
+      try {
+        const data = await expertService.getExperts();
+        setExperts(Array.isArray(data) ? data : []);
+      } catch {
+        setExperts([]);
+      }
+    };
+    loadExperts();
+  }, []);
 
   const clearImage = () => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -225,7 +242,30 @@ const CropDoctor = () => {
             )}
           </div>
         </div>
+
+        {/* Ask an Expert – below upload/diagnosis card */}
+        {experts.length > 0 && (
+          <section className="mt-6">
+            <h2 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Ask an Expert</h2>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+              {experts.map((expert) => (
+                <div key={expert._id} className="flex-shrink-0 w-[140px]">
+                  <ExpertCard
+                    expert={expert}
+                    onAsk={setSelectedExpert}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
+
+      <ExpertChatModal
+        expert={selectedExpert}
+        open={!!selectedExpert}
+        onClose={() => setSelectedExpert(null)}
+      />
     </div>
   );
 };

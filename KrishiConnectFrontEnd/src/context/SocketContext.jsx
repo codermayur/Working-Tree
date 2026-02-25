@@ -5,6 +5,7 @@
  */
 import React, { createContext, useContext, useEffect, useRef, useCallback, useState } from 'react';
 import { io } from 'socket.io-client';
+import { authStore } from '../store/authStore';
 
 function getSocketUrl() {
   try {
@@ -14,7 +15,8 @@ function getSocketUrl() {
       return u.origin;
     }
   } catch (_) {}
-  return window?.location?.origin || 'http://localhost:5005';
+  // When VITE_API_URL is not set, socket must point at backend. Match backend default port (5005).
+  return 'http://localhost:5005';
 }
 
 function getStoredToken() {
@@ -65,11 +67,21 @@ export function SocketProvider({ children }) {
       setConnected(false);
       socket.disconnect();
     });
+    socket.on('role-upgraded', async () => {
+      try {
+        const { userService } = await import('../services/user.service');
+        const updated = await userService.getMe();
+        if (updated && typeof authStore.setUser === 'function') {
+          authStore.setUser(updated);
+        }
+      } catch (_) {}
+    });
     socket.connect();
     return () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('connect_error');
+      socket.off('role-upgraded');
       socket.removeAllListeners();
       socket.disconnect();
       socketRef.current = null;

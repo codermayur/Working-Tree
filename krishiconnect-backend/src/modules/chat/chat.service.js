@@ -46,13 +46,40 @@ async function startConversation(userId, otherUserId) {
     ],
   });
   if (conversation) {
-    return conversation.populate('participants.user', 'name avatar profilePhoto');
+    return conversation.populate('participants.user', 'name avatar profilePhoto expertDetails');
   }
   conversation = await Conversation.create({
     type: 'direct',
     participants: allParticipants.map((id) => ({ user: id })),
   });
-  return conversation.populate('participants.user', 'name avatar profilePhoto');
+  return conversation.populate('participants.user', 'name avatar profilePhoto expertDetails');
+}
+
+/**
+ * Start or get direct conversation with an expert (Ask an Expert). Skips follow check.
+ */
+async function startExpertConversation(userId, expertId) {
+  const User = require('../user/user.model');
+  const expert = await User.findById(expertId).select('role').lean();
+  if (!expert || expert.role !== 'expert') {
+    throw new ApiError(400, 'Invalid expert');
+  }
+  const allParticipants = [userId, expertId].map((id) => id.toString()).sort();
+  let conversation = await Conversation.findOne({
+    type: 'direct',
+    $and: [
+      { 'participants.user': allParticipants[0] },
+      { 'participants.user': allParticipants[1] },
+    ],
+  });
+  if (conversation) {
+    return conversation.populate('participants.user', 'name avatar profilePhoto expertDetails');
+  }
+  conversation = await Conversation.create({
+    type: 'direct',
+    participants: allParticipants.map((id) => ({ user: id })),
+  });
+  return conversation.populate('participants.user', 'name avatar profilePhoto expertDetails');
 }
 
 const createConversation = async (userId, participants, type = 'direct') => {
@@ -395,6 +422,7 @@ async function unsendMessage(messageId, userId) {
 module.exports = {
   canChatWith,
   startConversation,
+  startExpertConversation,
   createConversation,
   getConversations,
   getMessages,

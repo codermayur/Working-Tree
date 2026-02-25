@@ -42,22 +42,25 @@ api.interceptors.request.use(
   (err) => Promise.reject(err)
 );
 
-/** On 401: clear auth and redirect to login (token missing or expired) */
+/** On 401: clear auth and redirect to login (token missing or expired). Skip for /auth/login so wrong credentials show message instead of redirect. */
 api.interceptors.response.use(
   (response) => response,
   (err) => {
     if (err.response?.status === 401) {
-      if (typeof authStore.logout === 'function') {
-        authStore.logout();
-      }
-      try {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-      } catch (_) {}
-      const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/login';
-      if (!isLoginPage && typeof window !== 'undefined') {
-        window.location.href = '/login';
+      const isLoginRequest = err.config?.url && String(err.config.url).includes('auth/login');
+      if (!isLoginRequest) {
+        if (typeof authStore.logout === 'function') {
+          authStore.logout();
+        }
+        try {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+        } catch (_) {}
+        const isLoginPage = typeof window !== 'undefined' && window.location.pathname === '/login';
+        if (!isLoginPage && typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(err);

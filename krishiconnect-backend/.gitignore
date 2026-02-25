@@ -10,3 +10,4 @@ dist/
 build/
 *.pid
 .DS_Store
+.env.example

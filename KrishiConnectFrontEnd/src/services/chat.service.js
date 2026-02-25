@@ -19,6 +19,12 @@ export const chatService = {
     return data?.data ?? data;
   },
 
+  /** POST /chat/conversations/start-expert body { expertId } → conversation (Ask an Expert). */
+  async startChat(expertId) {
+    const { data } = await api.post(`${chatBase}/conversations/start-expert`, { expertId });
+    return data?.data ?? data;
+  },
+
   /** GET /chat/conversations → { data: conversations[], meta: { pagination } } */
   async getConversations(params = {}) {
     const { data } = await api.get(`${chatBase}/conversations`, { params });

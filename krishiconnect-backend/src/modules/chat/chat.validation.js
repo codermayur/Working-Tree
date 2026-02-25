@@ -12,6 +12,10 @@ const startConversationSchema = Joi.object({
   otherUserId: Joi.string().hex().length(24).required(),
 });
 
+const startExpertConversationSchema = Joi.object({
+  expertId: Joi.string().hex().length(24).required(),
+});
+
 const validate = (schema) => (req, res, next) => {
   const { error, value } = schema.validate(req.body, {
     abortEarly: false,
@@ -34,5 +38,6 @@ const validate = (schema) => (req, res, next) => {
 module.exports = {
   createConversationSchema,
   startConversationSchema,
+  startExpertConversationSchema,
   validate,
 };

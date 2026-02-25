@@ -12,6 +12,8 @@ const errorHandler = require('./middlewares/error.middleware');
 
 const authRoutes = require('./modules/auth/auth.routes');
 const userRoutes = require('./modules/user/user.routes');
+const adminRoutes = require('./modules/admin/admin.routes');
+const expertApplicationRoutes = require('./modules/expert-application/expert-application.routes');
 const postRoutes = require('./modules/post/post.routes');
 const chatRoutes = require('./modules/chat/chat.routes');
 const qaRoutes = require('./modules/qa/qa.routes');
@@ -23,6 +25,7 @@ const translateRoutes = require('./modules/translate/translate.routes');
 const settingsRoutes = require('./modules/settings/settings.routes');
 const aiRoutes = require('./modules/ai/ai.routes');
 const searchRoutes = require('./modules/search/search.routes');
+const expertsRoutes = require('./modules/experts/experts.routes');
 
 const app = express();
 
@@ -56,6 +59,8 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/expert-application', expertApplicationRoutes);
 app.use('/api/v1/posts', postRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/qa', qaRoutes);
@@ -67,6 +72,7 @@ app.use('/api/v1/translate', translateRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/search', searchRoutes);
+app.use('/api/v1/experts', expertsRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

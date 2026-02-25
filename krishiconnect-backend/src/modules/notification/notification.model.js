@@ -25,7 +25,7 @@ const notificationSchema = new mongoose.Schema(
     },
     entityType: {
       type: String,
-      enum: ['post', 'comment', 'user', 'conversation'],
+      enum: ['post', 'comment', 'user', 'conversation', 'expert_application'],
       default: 'post',
     },
     message: { type: String, default: '' },

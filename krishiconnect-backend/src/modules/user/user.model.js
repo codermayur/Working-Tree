@@ -95,10 +95,22 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    /** RBAC: admin | farmer | expert. Enforced in backend only; never writable via profile update. */
+    role: {
+      type: String,
+      enum: ['admin', 'farmer', 'expert'],
+      default: 'farmer',
+      index: true,
+    },
     expertDetails: {
       specialization: String,
       qualifications: [String],
       experience: Number,
+      /** When true, admin has verified this expert (admin approval workflow). */
+      isVerifiedExpert: {
+        type: Boolean,
+        default: false,
+      },
       verificationDocs: [
         {
           type: {
@@ -211,6 +223,23 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+
+    /** Expert upgrade flow: link to latest application; status of upgrade request. */
+    expertApplicationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ExpertApplication',
+      default: null,
+    },
+    roleUpgradeStatus: {
+      type: String,
+      enum: ['none', 'pending', 'approved', 'rejected'],
+      default: 'none',
+    },
+
+    /** Display badges (e.g. expert after admin approval). */
+    badges: {
+      expert: { type: Boolean, default: false },
+    },
   },
   {
     timestamps: true,
@@ -235,6 +264,7 @@ userSchema.index(
 );
 userSchema.index({ 'location.state': 1, 'location.district': 1 });
 userSchema.index({ isExpert: 1, 'expertDetails.specialization': 1 });
+userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
 
 // Networking recommendations: location-based + pagination

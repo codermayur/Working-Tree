@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Users, Briefcase, MessageSquare, AlertCircle, User, Settings, Menu, LogIn, CloudRain, BarChart2, Leaf } from 'lucide-react';
+import { Home, Users, Briefcase, MessageSquare, AlertCircle, User, Settings, Menu, LogIn, CloudRain, BarChart2, Leaf, Award, Shield } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 // ============================================================================
@@ -13,6 +13,7 @@ const LeftSidebar = ({ open, setOpen }) => {
   const location = useLocation();
   const user = useAuthStore((s) => s.user);
   const isLoggedIn = !!user;
+  const isAdmin = user?.role === 'admin';
   const profilePhotoUrl =
     (user?.profilePhoto && (typeof user.profilePhoto === 'string' ? user.profilePhoto : user.profilePhoto?.url)) ||
     (user?.avatar && (typeof user.avatar === 'string' ? user.avatar : user.avatar?.url));
@@ -42,6 +43,8 @@ const LeftSidebar = ({ open, setOpen }) => {
     if (path.startsWith('/crop-doctor')) return 'cropDoctor';
     if (path.startsWith('/profile')) return 'profile';
     if (path.startsWith('/settings')) return 'settings';
+    if (path.startsWith('/admin/expert-applications')) return 'adminExpert';
+    if (path.startsWith('/admin/manage-admins')) return 'adminManage';
     return 'home';
   };
 
@@ -101,6 +104,32 @@ const LeftSidebar = ({ open, setOpen }) => {
 
         {/* Settings & Auth */}
         <div className="p-3 border-t border-gray-100 dark:border-gray-700 space-y-1">
+          {isAdmin && (
+            <>
+              <button
+                onClick={() => navigate('/admin/manage-admins')}
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition ${!open ? 'justify-center' : ''} ${
+                  activeNav === 'adminManage'
+                    ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <Shield size={19} />
+                {open && <span className="text-sm">Admin Management</span>}
+              </button>
+              <button
+                onClick={() => navigate('/admin/expert-applications')}
+                className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition ${!open ? 'justify-center' : ''} ${
+                  activeNav === 'adminExpert'
+                    ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <Award size={19} />
+                {open && <span className="text-sm">Expert Applications</span>}
+              </button>
+            </>
+          )}
           <button
             onClick={() => navigate('/settings')}
             className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition ${!open ? 'justify-center' : ''} ${
@@ -198,6 +227,38 @@ const LeftSidebar = ({ open, setOpen }) => {
 
           {/* Settings & Auth */}
           <div className="p-3 border-t border-gray-100 dark:border-gray-700 space-y-1">
+            {isAdmin && (
+              <>
+                <button
+                  onClick={() => {
+                    navigate('/admin/manage-admins');
+                    setOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition ${
+                    activeNav === 'adminManage'
+                      ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Shield size={19} />
+                  <span className="text-sm">Admin Management</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/admin/expert-applications');
+                    setOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition ${
+                    activeNav === 'adminExpert'
+                      ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-bold'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Award size={19} />
+                  <span className="text-sm">Expert Applications</span>
+                </button>
+              </>
+            )}
             <button
               onClick={() => {
                 navigate('/settings');

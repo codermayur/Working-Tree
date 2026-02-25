@@ -39,7 +39,7 @@ const verifyRegistrationOTPSchema = Joi.object({
 
 const loginSchema = Joi.object({
   phoneNumber: Joi.string().pattern(/^[6-9]\d{9}$/).allow('').optional(),
-  email: Joi.string().email().lowercase().trim().allow('').optional(),
+  email: Joi.string().lowercase().trim().allow('').optional(), // allow "admin" as username
   password: Joi.string().required(),
 });
 

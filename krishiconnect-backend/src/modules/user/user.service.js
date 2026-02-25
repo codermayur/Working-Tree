@@ -101,6 +101,7 @@ const updatePassword = async (userId, currentPassword, newPassword) => {
 };
 
 const updateProfile = async (userId, updateData) => {
+  // RBAC: role is never writable via profile update. Only admin-only endpoint may change role.
   const allowedFields = [
     'name',
     'email',
@@ -118,6 +119,8 @@ const updateProfile = async (userId, updateData) => {
       filteredData[field] = updateData[field];
     }
   });
+
+  delete filteredData.role; // RBAC: never persist role from profile update
 
   if (Object.keys(filteredData).length > 0) {
     filteredData.lastProfileUpdate = new Date();

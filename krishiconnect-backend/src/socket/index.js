@@ -53,6 +53,17 @@ function initializeSocket(server) {
       if (conversationId) socket.leave(conversationId);
     });
 
+    socket.on('join_chat', (chatId) => {
+      chatHandlers.handleConversationJoin(io, socket, chatId);
+    });
+
+    socket.on('send_message', (data) => {
+      const payload = data && typeof data.chatId !== 'undefined'
+        ? { conversationId: data.chatId, type: 'text', content: { text: data.text || '' } }
+        : data;
+      chatHandlers.handleMessageSend(io, socket, payload);
+    });
+
     socket.on('message:send', (data) => {
       chatHandlers.handleMessageSend(io, socket, data);
     });

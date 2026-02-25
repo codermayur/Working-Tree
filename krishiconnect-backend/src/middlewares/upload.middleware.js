@@ -1,6 +1,6 @@
 const multer = require('multer');
 const ApiError = require('../utils/ApiError');
-const { MAX_FILE_SIZE, MAX_FILES, PROFILE_PIC_MAX_SIZE, BACKGROUND_MAX_SIZE, CHAT_UPLOAD_MAX_SIZE } = require('../config/constants');
+const { MAX_FILE_SIZE, MAX_FILES, PROFILE_PIC_MAX_SIZE, BACKGROUND_MAX_SIZE, CHAT_UPLOAD_MAX_SIZE, CERTIFICATE_MAX_SIZE } = require('../config/constants');
 
 const storage = multer.memoryStorage();
 
@@ -142,10 +142,40 @@ const uploadSingleChatFile = (fieldName) => (req, res, next) => {
   });
 };
 
+const certificateFileFilter = (req, file, cb) => {
+  const allowed = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  if (allowed.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new ApiError(400, 'Invalid file type. Only PDF, JPG, or PNG files are accepted.'), false);
+  }
+};
+
+const uploadCertificate = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: certificateFileFilter,
+  limits: { fileSize: CERTIFICATE_MAX_SIZE, files: 1 },
+});
+
+const uploadSingleCertificate = (fieldName) => (req, res, next) => {
+  const uploadHandler = uploadCertificate.single(fieldName);
+  uploadHandler(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return next(new ApiError(400, 'File size exceeds 5MB. Please compress your file and try again.'));
+      }
+      return next(new ApiError(400, err.message));
+    }
+    if (err) return next(err);
+    next();
+  });
+};
+
 module.exports = {
   uploadSingle,
   uploadMultiple,
   uploadSingleProfilePic,
   uploadSingleBackground,
   uploadSingleChatFile,
+  uploadSingleCertificate,
 };

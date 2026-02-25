@@ -19,6 +19,8 @@ import PrivacySecurityPage from './pages/PrivacySecurityPage'
 import WeatherPage from './pages/WeatherPage'
 import MarketPage from './pages/MarketPage'
 import CropDoctor from './pages/CropDoctor'
+import AdminExpertApplicationsPage from './pages/AdminExpertApplicationsPage'
+import ManageAdmins from './pages/admin/ManageAdmins'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
@@ -75,6 +77,8 @@ function App() {
           <Route path="/weather" element={<WeatherPage />} />
           <Route path="/market" element={<MarketPage />} />
           <Route path="/crop-doctor" element={<CropDoctor />} />
+          <Route path="/admin/expert-applications" element={<AdminExpertApplicationsPage />} />
+          <Route path="/admin/manage-admins" element={<ManageAdmins />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

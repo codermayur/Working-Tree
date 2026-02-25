@@ -764,9 +764,12 @@ const ProfilePage = () => {
 
             {/* Name & Info */}
             <div className="pb-5">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100">{user.name}</h1>
                 {user.verified && <span className="text-xs font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/40 px-2 py-0.5 rounded-full border border-green-100 dark:border-green-800">✓ Verified</span>}
+                {(user.role === 'expert' || user.badges?.expert) && (
+                  <span className="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/40 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800">🏅 Expert Farmer</span>
+                )}
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5 font-medium">{user.headline}</p>
 

@@ -28,6 +28,15 @@ const startConversation = asyncHandler(async (req, res) => {
   );
 });
 
+/** POST /conversations/start-expert — body: { expertId }. Get or create direct conversation with expert (Ask an Expert). */
+const startExpertConversation = asyncHandler(async (req, res) => {
+  const { expertId } = req.body;
+  const conversation = await chatService.startExpertConversation(req.user._id, expertId);
+  res.status(200).json(
+    new ApiResponse(200, conversation, conversation.createdAt.getTime() > Date.now() - 5000 ? 'Conversation created' : 'Conversation found')
+  );
+});
+
 const getConversations = asyncHandler(async (req, res) => {
   const result = await chatService.getConversations(req.user._id, req.query);
   res.status(200).json(
@@ -111,6 +120,7 @@ const uploadChatMedia = asyncHandler(async (req, res) => {
 module.exports = {
   createConversation,
   startConversation,
+  startExpertConversation,
   getConversations,
   getMessages,
   uploadChatMedia,
