@@ -1,7 +1,6 @@
 /**
  * Shared API client: global axios instance with Bearer token and 401 handling.
- * Uses VITE_API_URL (e.g. http://localhost:5000/api/v1).
- * Token is read from localStorage (set by auth store on login).
+ * Use relative /api/v1 so Vite proxy forwards to backend (no hardcoded localhost).
  */
 import axios from 'axios';
 import { authStore } from '../store/authStore';

@@ -12,11 +12,12 @@ import { postService } from '../services/post.service';
 import { userService } from '../services/user.service';
 import { searchService } from '../services/search.service';
 import { authStore } from '../store/authStore';
+import { newsService } from '../services/news.service';
 
 // ============================================================================
 // API: postService + userService; demo fallback for weather/market/news
 // ============================================================================
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5005/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || '/api/v1';
 
 const api = {
   fetchPosts: (page, limit, mode = 'recent') =>
@@ -39,7 +40,15 @@ const api = {
   updateProfile: async (userId, data) => ({ user: await userService.updateProfile(data) }),
   fetchWeather: async (city) => { await delay(700); return DEMO_WEATHER; },
   fetchMarketPrices: async () => { await delay(600); return { prices: DEMO_MARKET_PRICES }; },
-  fetchNews: async () => { await delay(500); return { news: DEMO_NEWS }; },
+  fetchNews: async () => {
+    try {
+      const list = await newsService.getAgricultureNews();
+      if (list && list.length > 0) {
+        return { news: list.map((n) => ({ ...n, category: n.source || 'Agriculture' })) };
+      }
+    } catch (_) {}
+    return { news: DEMO_NEWS };
+  },
 };
 
 // ============================================================================

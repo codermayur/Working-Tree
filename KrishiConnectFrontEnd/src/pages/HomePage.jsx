@@ -19,11 +19,12 @@ import { useTranslatePost } from '../hooks/useTranslatePost';
 import { useWeather, INDIAN_CITIES } from '../hooks/useWeather';
 import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
 import { useWeatherCoords } from '../context/WeatherContext';
+import { newsService } from '../services/news.service';
 
 // ============================================================================
 // API: postService + userService; demo fallback for weather/market/news
 // ============================================================================
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5005/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || '/api/v1';
 
 const api = {
   fetchPosts: (page, limit, mode = 'recent') =>
@@ -45,7 +46,15 @@ const api = {
   unfollowUser: (userId) => userService.unfollowUser(userId),
   updateProfile: async (userId, data) => ({ user: await userService.updateProfile(data) }),
   fetchMarketPrices: async () => { await delay(600); return { prices: DEMO_MARKET_PRICES }; },
-  fetchNews: async () => { await delay(500); return { news: DEMO_NEWS }; },
+  fetchNews: async () => {
+    try {
+      const list = await newsService.getAgricultureNews();
+      if (list && list.length > 0) {
+        return { news: list.map((n) => ({ ...n, category: n.source || 'Agriculture' })) };
+      }
+    } catch (_) {}
+    return { news: DEMO_NEWS };
+  },
 };
 
 // ============================================================================
@@ -1498,19 +1507,62 @@ const RightSidebar = () => {
   const [prices, setPrices] = useState([]);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState(null);
   const [showAllNews, setShowAllNews] = useState(false);
   const [pricesRefreshing, setPricesRefreshing] = useState(false);
+  const [newsRefreshing, setNewsRefreshing] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const [p, n] = await Promise.all([api.fetchMarketPrices(), api.fetchNews()]);
-        setPrices(p.prices); setNews(n.news);
-      } catch { } finally { setLoading(false); }
+        const p = await api.fetchMarketPrices();
+        setPrices(p.prices);
+      } catch {
+        // keep prices empty on error
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
+
+  useEffect(() => {
+    const loadNews = async () => {
+      setNewsLoading(true);
+      setNewsError(null);
+      try {
+        const list = await newsService.getAgricultureNews();
+        const mapped = Array.isArray(list) && list.length > 0
+          ? list.map((n) => ({ ...n, category: n.source || 'Agriculture' }))
+          : [];
+        setNews(mapped);
+      } catch {
+        setNewsError('Failed to load news');
+        setNews([]);
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+    loadNews();
+  }, []);
+
+  const refreshNews = async () => {
+    setNewsRefreshing(true);
+    setNewsError(null);
+    try {
+      const list = await newsService.getAgricultureNews();
+      const mapped = Array.isArray(list) && list.length > 0
+        ? list.map((n) => ({ ...n, category: n.source || 'Agriculture' }))
+        : [];
+      setNews(mapped);
+    } catch {
+      setNewsError('Failed to refresh news');
+    } finally {
+      setNewsRefreshing(false);
+    }
+  };
 
   const weatherCard = useMemo(() => {
     if (!currentWeather) return null;
@@ -1662,19 +1714,43 @@ const RightSidebar = () => {
 
       {/* ── Agri News ── */}
       <div className="card p-4">
-        <h3 className="font-bold text-[13px] text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-          <span>🌾</span> Agri News
-        </h3>
-        {loading ? (
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-bold text-[13px] text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <span>🌾</span> Agri News
+          </h3>
+          <button
+            type="button"
+            onClick={refreshNews}
+            disabled={newsRefreshing || newsLoading}
+            className="p-1.5 rounded-lg flex items-center transition-colors text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50"
+            title="Refresh news"
+          >
+            <RefreshCw size={13} className={newsRefreshing ? 'animate-spin' : ''} />
+          </button>
+        </div>
+        {newsLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[1, 2, 3].map(i => <CardSkeleton key={i} />)}
           </div>
+        ) : newsError ? (
+          <div className="py-4 px-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800">
+            <p className="text-xs text-red-600 dark:text-red-400 font-medium">{newsError}</p>
+            <button
+              type="button"
+              onClick={refreshNews}
+              className="mt-2 text-xs font-semibold text-red-700 dark:text-red-300 hover:underline"
+            >
+              Try again
+            </button>
+          </div>
+        ) : news.length === 0 ? (
+          <p className="text-xs text-gray-500 dark:text-gray-400 py-4 text-center">No news available right now.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {displayedNews.map(item => (
+            {displayedNews.map((item, idx) => (
                 <a
-                  key={item._id}
-                  href={item.url}
+                  key={item.url || item._id || `news-${idx}`}
+                  href={item.url || '#'}
                   target="_blank"
                   rel="noreferrer"
                   className="block py-2.5 px-2.5 rounded-xl no-underline transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -1684,9 +1760,9 @@ const RightSidebar = () => {
                   </p>
                   <div className="flex items-center gap-2">
                     <span className={`text-[10px] font-bold py-0.5 px-2 rounded-full ${getCategoryClass(item.category)}`}>
-                      {item.category}
+                      {item.category || 'Agriculture'}
                     </span>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400">{formatTimeAgo(item.publishedAt)}</span>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400">{item.publishedAt ? formatTimeAgo(item.publishedAt) : '—'}</span>
                   </div>
                 </a>
             ))}

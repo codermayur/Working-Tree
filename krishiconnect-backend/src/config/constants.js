@@ -1,6 +1,9 @@
 module.exports = {
   OTP_EXPIRY_SECONDS: 600, // 10 minutes
   OTP_MAX_ATTEMPTS: 3,
+  /** Account deletion OTP: 10 min expiry, max 5 verification attempts */
+  DELETE_OTP_EXPIRY_SECONDS: 600,
+  DELETE_OTP_MAX_ATTEMPTS: 5,
   JWT_ACCESS_EXPIRY: process.env.JWT_EXPIRES_IN || '7d',
   JWT_REFRESH_EXPIRY: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
   /** RBAC: valid user roles. Default for new users is farmer. */

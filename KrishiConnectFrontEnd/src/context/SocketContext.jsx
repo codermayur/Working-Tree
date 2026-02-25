@@ -7,7 +7,14 @@ import React, { createContext, useContext, useEffect, useRef, useCallback, useSt
 import { io } from 'socket.io-client';
 import { authStore } from '../store/authStore';
 
+/**
+ * Single Socket.IO client for chat. Connects with JWT on auth.
+ * Uses same origin in dev so Vite proxy forwards /socket.io to backend (no direct ws://localhost:5005).
+ */
 function getSocketUrl() {
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    return window.location.origin;
+  }
   try {
     const base = import.meta.env.VITE_API_URL || '';
     if (base) {
@@ -15,8 +22,10 @@ function getSocketUrl() {
       return u.origin;
     }
   } catch (_) {}
-  // When VITE_API_URL is not set, socket must point at backend. Match backend default port (5005).
-  return 'http://localhost:5005';
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  return '';
 }
 
 function getStoredToken() {

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { authStore } from '../store/authStore';
 import { userService } from '../services/user.service';
+import { accountService } from '../services/account.service';
 import { setStoredLanguage } from '../i18n';
 import { useTheme } from '../hooks/useTheme';
 import { useBlockedUsers, useUnblockUser } from '../hooks/usePrivacySecurity';
@@ -93,11 +94,9 @@ const settingsApi = {
     return { success: true };
   },
 
-  // TODO: DELETE ${API_BASE}/auth/account  body: { confirmPassword }
-  deleteAccount: async (password) => {
-    await delay(1200);
-    return { success: true };
-  },
+  // Account deletion: OTP flow — request OTP then verify (real API)
+  requestDeleteOtp: () => accountService.requestDeleteOtp(),
+  verifyDeleteOtp: (otp) => accountService.verifyDeleteOtp(otp),
 };
 
 // ============================================================================
@@ -806,10 +805,10 @@ const PreferencesSection = ({ data, onToast }) => {
 const DangerSection = ({ onToast }) => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletePassword, setDeletePassword]   = useState('');
-  const [deleteLoading, setDeleteLoading]     = useState(false);
-  const [logoutLoading, setLogoutLoading]     = useState(false);
-  const [showDeletePw, setShowDeletePw]       = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1);
+  const [deleteOtp, setDeleteOtp] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const handleLogout = async () => {
     setLogoutLoading(true);
@@ -826,25 +825,53 @@ const DangerSection = ({ onToast }) => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!deletePassword.trim()) return;
+  const handleRequestDeleteOtp = async () => {
     setDeleteLoading(true);
     try {
-      await settingsApi.deleteAccount(deletePassword);
-      onToast('Account deleted. Goodbye!', 'success');
-      // TODO: Clear auth & redirect
-      console.log('[Auth] Account deleted — redirect to /register');
+      await settingsApi.requestDeleteOtp();
+      onToast('Verification code sent to your email or phone', 'success');
+      setDeleteStep(2);
+      setDeleteOtp('');
     } catch (err) {
-      onToast(err.message || 'Failed to delete account', 'error');
+      const msg = err?.response?.data?.message || err?.message || 'Failed to send code';
+      onToast(msg, 'error');
     } finally {
       setDeleteLoading(false);
-      setShowDeleteModal(false);
     }
+  };
+
+  const handleVerifyDeleteOtp = async () => {
+    const otp = deleteOtp.trim();
+    if (!/^\d{6}$/.test(otp)) {
+      onToast('Enter the 6-digit code', 'error');
+      return;
+    }
+    setDeleteLoading(true);
+    try {
+      await settingsApi.verifyDeleteOtp(otp);
+      onToast('Account deleted successfully', 'success');
+      if (typeof authStore.logout === 'function') authStore.logout();
+      setShowDeleteModal(false);
+      setDeleteStep(1);
+      setDeleteOtp('');
+      navigate('/', { replace: true });
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || 'Invalid or expired code';
+      onToast(msg, 'error');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteStep(1);
+    setDeleteOtp('');
   };
 
   return (
     <>
-      {/* Delete Confirmation Modal */}
+      {/* Delete Account — OTP verification modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full shadow-2xl dark:shadow-none border border-transparent dark:border-gray-700">
@@ -854,46 +881,60 @@ const DangerSection = ({ onToast }) => {
               </div>
               <div>
                 <h3 className="font-bold text-gray-900 dark:text-gray-100">Delete Account</h3>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">This action is permanent and cannot be undone</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                  {deleteStep === 1 ? 'We will send a verification code to your email or phone' : 'Enter the 6-digit code we sent you'}
+                </p>
               </div>
-              <button onClick={() => setShowDeleteModal(false)} className="ml-auto p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-400 dark:text-gray-500">
+              <button onClick={closeDeleteModal} className="ml-auto p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl text-gray-400 dark:text-gray-500">
                 <X size={16} />
               </button>
             </div>
             <div className="p-5 space-y-4">
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl p-4 space-y-1">
-                <p className="text-sm font-bold text-red-700 dark:text-red-300">What will be deleted:</p>
-                {['Your profile and all personal information', 'All your posts, comments & media', 'Your connections and messages', 'Access to all KrishiConnect features'].map(item => (
-                  <div key={item} className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400">
-                    <X size={11} className="mt-0.5 flex-shrink-0" />{item}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1.5">Confirm with your password</label>
-                <div className="relative">
-                  <input type={showDeletePw ? 'text' : 'password'}
-                    value={deletePassword}
-                    onChange={(e) => setDeletePassword(e.target.value)}
-                    placeholder="Enter your current password"
-                    className="w-full px-4 py-2.5 pr-10 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border border-red-200 dark:border-red-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 bg-red-50 dark:bg-red-900/20" />
-                  <button onClick={() => setShowDeletePw(!showDeletePw)} type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
-                    {showDeletePw ? <EyeOff size={14} /> : <Eye size={14} />}
-                  </button>
+              {deleteStep === 1 && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl p-4 space-y-1">
+                  <p className="text-sm font-bold text-red-700 dark:text-red-300">This action cannot be undone:</p>
+                  {['Your profile and all personal information', 'All your posts, comments & media', 'Your connections and messages', 'Access to all KrishiConnect features'].map(item => (
+                    <div key={item} className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400">
+                      <X size={11} className="mt-0.5 flex-shrink-0" />{item}
+                    </div>
+                  ))}
                 </div>
-              </div>
+              )}
+              {deleteStep === 1 ? (
+                <p className="text-sm text-gray-600 dark:text-gray-400">Click below to receive a verification code. Then enter it in the next step to confirm deletion.</p>
+              ) : (
+                <div>
+                  <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1.5">Verification code</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={deleteOtp}
+                    onChange={(e) => setDeleteOtp(e.target.value.replace(/\D/g, ''))}
+                    placeholder="000000"
+                    className="w-full px-4 py-2.5 text-center text-lg tracking-widest text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-200 dark:focus:ring-red-800 bg-white dark:bg-gray-700"
+                  />
+                </div>
+              )}
             </div>
             <div className="p-5 border-t border-gray-100 dark:border-gray-700 flex gap-3">
-              <button onClick={() => { setShowDeleteModal(false); setDeletePassword(''); }}
+              <button onClick={closeDeleteModal}
                 className="flex-1 py-2.5 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                 Cancel
               </button>
-              <button onClick={handleDeleteAccount} disabled={!deletePassword.trim() || deleteLoading}
-                className="flex-1 py-2.5 bg-red-500 dark:bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-600 dark:hover:bg-red-700 disabled:opacity-40 transition flex items-center justify-center gap-2">
-                {deleteLoading ? <Loader size={14} className="animate-spin" /> : <Trash2 size={14} />}
-                {deleteLoading ? 'Deleting...' : 'Delete My Account'}
-              </button>
+              {deleteStep === 1 ? (
+                <button onClick={handleRequestDeleteOtp} disabled={deleteLoading}
+                  className="flex-1 py-2.5 bg-red-500 dark:bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-600 dark:hover:bg-red-700 disabled:opacity-40 transition flex items-center justify-center gap-2">
+                  {deleteLoading ? <Loader size={14} className="animate-spin" /> : <Mail size={14} />}
+                  {deleteLoading ? 'Sending...' : 'Send verification code'}
+                </button>
+              ) : (
+                <button onClick={handleVerifyDeleteOtp} disabled={!deleteOtp.trim() || deleteOtp.length !== 6 || deleteLoading}
+                  className="flex-1 py-2.5 bg-red-500 dark:bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-600 dark:hover:bg-red-700 disabled:opacity-40 transition flex items-center justify-center gap-2">
+                  {deleteLoading ? <Loader size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                  {deleteLoading ? 'Deleting...' : 'Delete my account'}
+                </button>
+              )}
             </div>
           </div>
         </div>

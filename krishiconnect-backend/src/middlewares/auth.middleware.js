@@ -38,6 +38,10 @@ const authenticate = asyncHandler(async (req, res, next) => {
       throw new ApiError(403, 'Account is deactivated');
     }
 
+    if (user.isDeleted) {
+      throw new ApiError(403, 'Account has been deleted');
+    }
+
     if (user.isBanned) {
       throw new ApiError(403, 'Account is banned');
     }
@@ -65,7 +69,7 @@ const optionalAuth = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.userId).select('-password -refreshTokens');
 
-      if (user && user.isActive && !user.isBanned) {
+      if (user && user.isActive && !user.isBanned && !user.isDeleted) {
         req.user = user;
       }
     } catch (error) {

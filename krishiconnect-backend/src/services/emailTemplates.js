@@ -151,8 +151,55 @@ function get2FAOTPTemplate(userName, otpCode, expiryMinutes = 5) {
   };
 }
 
+function getAccountDeletionOTPTemplate(userName, otpCode, expiryMinutes = 10) {
+  return {
+    subject: '🔐 Verify Account Deletion - OTP Code',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #b91c1c; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+            .content { background-color: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 5px 5px; }
+            .otp-box { background-color: #fff; border: 2px dashed #b91c1c; padding: 20px; text-align: center; margin: 20px 0; border-radius: 5px; }
+            .otp-code { font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #b91c1c; font-family: monospace; }
+            .warning { background-color: #fef3c7; border: 1px solid #f59e0b; padding: 10px; border-radius: 5px; margin: 15px 0; color: #92400e; }
+            .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #6b7280; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h2>Account Deletion Verification</h2>
+            </div>
+            <div class="content">
+              <p>Hi ${userName || 'User'},</p>
+              <p>You requested to delete your account. To confirm, enter the code below in the app:</p>
+              <div class="otp-box">
+                <div class="otp-code">${otpCode}</div>
+                <p style="color: #6b7280; margin-top: 10px;">Valid for ${expiryMinutes} minutes</p>
+              </div>
+              <div class="warning">
+                <strong>⚠️ This action cannot be undone.</strong> After verification, your account will be deactivated and data removed or anonymized as per our policy.
+              </div>
+              <p>If you did not request account deletion, please ignore this email and secure your account.</p>
+              <div class="footer">
+                <p>© ${new Date().getFullYear()} ${APP_NAME}. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+    text: `Account Deletion Verification\n\nHi ${userName || 'User'},\n\nYour verification code is: ${otpCode}\n\nValid for ${expiryMinutes} minutes. Do not share this code.\n\nIf you didn't request this, please ignore this email.\n\n— ${APP_NAME}`,
+  };
+}
+
 module.exports = {
   getRegistrationOTPTemplate,
   getPasswordResetOTPTemplate,
   get2FAOTPTemplate,
+  getAccountDeletionOTPTemplate,
 };

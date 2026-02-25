@@ -11,12 +11,17 @@ const logger = require('../config/logger');
 let io = null;
 
 function initializeSocket(server) {
+  const corsOrigin = process.env.CLIENT_URL || '*';
+  const origins = corsOrigin === '*' ? '*' : corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
   io = socketIO(server, {
     cors: {
-      origin: process.env.CLIENT_URL || '*',
+      origin: Array.isArray(origins) && origins.length > 0 ? origins : '*',
       credentials: true,
+      methods: ['GET', 'POST'],
     },
     transports: ['websocket', 'polling'],
+    pingTimeout: 60000,
+    pingInterval: 25000,
   });
 
   io.use(async (socket, next) => {

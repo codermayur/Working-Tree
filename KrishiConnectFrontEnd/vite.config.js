@@ -13,10 +13,16 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // When frontend uses relative /api/v1 (e.g. no .env), forward to backend
+      // API: forward to backend so frontend can use relative /api/v1
       '/api': {
         target: 'http://localhost:5005',
         changeOrigin: true,
+      },
+      // Socket.IO: WebSocket and polling so socket connects to same origin
+      '/socket.io': {
+        target: 'http://localhost:5005',
+        changeOrigin: true,
+        ws: true,
       },
       // WeatherUnion API (avoids CORS); use /weather-api/... in fetch
       '/weather-api': {

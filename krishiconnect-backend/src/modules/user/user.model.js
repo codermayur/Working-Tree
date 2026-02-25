@@ -219,6 +219,15 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    /** Account deletion OTP (hashed). Cleared after verification or expiry. */
+    deleteOtpHash: { type: String, select: false },
+    deleteOtpExpiresAt: { type: Date, select: false },
+    deleteOtpAttempts: { type: Number, default: 0, select: false },
+
+    /** Soft delete: when true, user is treated as deleted; sensitive data should be anonymized. */
+    isDeleted: { type: Boolean, default: false, index: true },
+    deletedAt: { type: Date },
+
     schemaVersion: {
       type: Number,
       default: 1,
@@ -266,6 +275,7 @@ userSchema.index({ 'location.state': 1, 'location.district': 1 });
 userSchema.index({ isExpert: 1, 'expertDetails.specialization': 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
+userSchema.index({ isDeleted: 1, isActive: 1 });
 
 // Networking recommendations: location-based + pagination
 userSchema.index({ 'location.city': 1, isActive: 1 });

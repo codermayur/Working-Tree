@@ -69,6 +69,19 @@ const notificationListLimiter = rateLimit({
   },
 });
 
+// Account deletion OTP: limit requests per user to prevent abuse.
+const accountDeletionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: isTesting ? 100 : 3,
+  message: { success: false, message: 'Too many account deletion requests. Try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const id = req.user?._id ?? req.user?.id;
+    return id ? String(id) : (req.ip || 'anonymous');
+  },
+});
+
 module.exports = {
   generalLimiter,
   authLimiter,
@@ -77,4 +90,5 @@ module.exports = {
   uploadLimiter,
   aiLimiter,
   notificationListLimiter,
+  accountDeletionLimiter,
 };

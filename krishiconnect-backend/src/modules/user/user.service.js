@@ -56,6 +56,10 @@ const getProfile = async (userId, viewerId = null) => {
     throw new ApiError(404, 'User not found');
   }
 
+  if (user.isDeleted) {
+    throw new ApiError(404, 'User not found');
+  }
+
   if (viewerId && viewerId.toString() !== userId.toString()) {
     const blockRel = await getBlockRelationship(viewerId, userId);
     if (blockRel.theyBlockMe) {
@@ -290,7 +294,7 @@ const searchUsers = async (query, options = {}) => {
   const { q, filter = 'all', page = 1, limit = 20 } = query;
   const { viewerId } = options;
 
-  let searchQuery = { isActive: true, isBanned: false };
+  let searchQuery = { isActive: true, isBanned: false, isDeleted: { $ne: true } };
 
   if (viewerId) {
     const blockedByViewer = await getBlockedIds(viewerId);

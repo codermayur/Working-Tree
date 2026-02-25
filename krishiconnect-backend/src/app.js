@@ -26,6 +26,8 @@ const settingsRoutes = require('./modules/settings/settings.routes');
 const aiRoutes = require('./modules/ai/ai.routes');
 const searchRoutes = require('./modules/search/search.routes');
 const expertsRoutes = require('./modules/experts/experts.routes');
+const accountRoutes = require('./modules/account/account.routes');
+const newsRoutes = require('./modules/news/news.routes');
 
 const app = express();
 
@@ -73,6 +75,8 @@ app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/experts', expertsRoutes);
+app.use('/api/v1/account', accountRoutes);
+app.use('/api/v1/news', newsRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
