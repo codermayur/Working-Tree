@@ -18,7 +18,7 @@ export default defineConfig({
         target: 'http://localhost:5005',
         changeOrigin: true,
       },
-      // Socket.IO: WebSocket and polling so socket connects to same origin
+      // Socket.IO: only used if client used same-origin; in dev client connects directly to :5005 to avoid ws proxy ECONNABORTED
       '/socket.io': {
         target: 'http://localhost:5005',
         changeOrigin: true,

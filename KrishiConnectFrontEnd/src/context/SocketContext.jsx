@@ -9,11 +9,12 @@ import { authStore } from '../store/authStore';
 
 /**
  * Single Socket.IO client for chat. Connects with JWT on auth.
- * Uses same origin in dev so Vite proxy forwards /socket.io to backend (no direct ws://localhost:5005).
+ * In dev: connect directly to backend (port 5005) to avoid Vite ws proxy write ECONNABORTED.
+ * In prod: VITE_API_URL origin or window.location.origin.
  */
 function getSocketUrl() {
   if (import.meta.env.DEV && typeof window !== 'undefined') {
-    return window.location.origin;
+    return 'http://localhost:5005';
   }
   try {
     const base = import.meta.env.VITE_API_URL || '';
@@ -56,23 +57,25 @@ export function SocketProvider({ children }) {
       }
       return;
     }
+
+    
     if (socketRef.current && tokenRef.current === token) return;
     tokenRef.current = token;
     const url = getSocketUrl();
     const socket = io(url, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
       autoConnect: false,
       reconnectionAttempts: 2,
       reconnectionDelay: 3000,
-      timeout: 4000,
+      timeout: 10000,
     });
     socketRef.current = socket;
     setConnected(false);
     socket.on('connect', () => setConnected(true));
     socket.on('disconnect', () => setConnected(false));
-    socket.on('connect_error', () => {
-      console.warn('Socket server unavailable — running offline mode');
+    socket.on('connect_error', (err) => {
+      if (import.meta.env.DEV) console.warn('Socket connect_error:', err?.message ?? err);
       setConnected(false);
       socket.disconnect();
     });
@@ -85,6 +88,7 @@ export function SocketProvider({ children }) {
         }
       } catch (_) {}
     });
+
     socket.connect();
     return () => {
       socket.off('connect');
