@@ -11,7 +11,8 @@ const logger = require('../config/logger');
 let io = null;
 
 function initializeSocket(server) {
-  const corsOrigin = process.env.CLIENT_URL || '*';
+  const defaultOrigin = process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : '*';
+  const corsOrigin = process.env.CLIENT_URL || defaultOrigin;
   const origins = corsOrigin === '*' ? '*' : corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
   io = socketIO(server, {
     cors: {
