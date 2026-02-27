@@ -29,17 +29,20 @@ function initializeSocket(server) {
     try {
       const token = socket.handshake.auth?.token;
       if (!token) {
+        logger.warn('Socket auth failed: missing token');
         return next(new Error('Authentication required'));
       }
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.userId).select('name avatar isActive');
       if (!user || !user.isActive) {
+        logger.warn('Socket auth failed: user not found or inactive', { userId: decoded.userId });
         return next(new Error('User not found'));
       }
       socket.userId = user._id.toString();
       socket.user = user;
       next();
     } catch (err) {
+      logger.error('Socket auth error', { message: err.message });
       next(new Error('Authentication error'));
     }
   });

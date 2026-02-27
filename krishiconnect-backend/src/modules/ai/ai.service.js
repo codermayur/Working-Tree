@@ -1,4 +1,6 @@
 const Groq = require('groq-sdk');
+const axios = require('axios');
+const FormData = require('form-data');
 const ApiError = require('../../utils/ApiError');
 const { getRedis } = require('../../config/redis');
 const logger = require('../../config/logger');
@@ -245,9 +247,49 @@ async function askStream(userId, rawQuestion, writeChunk, modelName = null, resp
   }
 }
 
+/**
+ * Forwards image to external ML service for plant disease prediction.
+ * @param {Buffer} imageBuffer - Raw image bytes
+ * @param {string} mimetype - e.g. 'image/jpeg', 'image/png'
+ * @returns {Promise<object>} ML API response with top_prediction and alternatives
+ */
+async function predictCropDisease(imageBuffer, mimetype) {
+  const rawUrl = process.env.PLANT_DISEASE_API_URL;
+  if (!rawUrl || !rawUrl.trim()) {
+    logger.error('Plant disease ML URL is not configured (PLANT_DISEASE_API_URL missing)');
+    throw new ApiError(502, 'ML service unavailable, please try again later');
+  }
+
+  // Be defensive: ensure we always hit /predict even if env is misconfigured.
+  const base = rawUrl.trim().replace(/\/+$/, '');
+  const apiUrl = base.endsWith('/predict') ? base : `${base}/predict`;
+
+  const formData = new FormData();
+  formData.append('file', imageBuffer, { filename: 'image.jpg', contentType: mimetype });
+
+  try {
+    logger.info('Calling plant disease ML service', { url: apiUrl, mimetype });
+    const response = await axios.post(apiUrl, formData, {
+      headers: formData.getHeaders(),
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+      timeout: 30000,
+    });
+    return response.data;
+  } catch (err) {
+    logger.error('Plant disease ML request failed', {
+      message: err.message,
+      code: err.code,
+      status: err.response?.status,
+    });
+    throw new ApiError(502, 'ML service unavailable, please try again later');
+  }
+}
+
 module.exports = {
   ask,
   askStream,
+  predictCropDisease,
   getSystemPrompt,
   KRISHI_SYSTEM_PROMPT: KRISHI_SYSTEM_PROMPT_BASE,
   REFUSAL_MESSAGE,

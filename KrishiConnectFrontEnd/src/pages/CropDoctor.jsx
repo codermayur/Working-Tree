@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Leaf, Upload, Camera, Loader, AlertCircle, CheckCircle, AlertTriangle, RefreshCw } from 'lucide-react';
-import axios from 'axios';
 import { ExpertCard, ExpertChatModal } from '../components/experts';
 import { expertService } from '../services/expert.service';
-
-const CROP_DOCTOR_API = 'http://localhost:8000/predict';
+import { api } from '../services/api';
 
 // ============================================================================
 // CROP DOCTOR PAGE – Same layout as AlertsPage, NetworkPage (AppLayout wrapper)
@@ -72,14 +70,18 @@ const CropDoctor = () => {
     setResult(null);
     try {
       const formData = new FormData();
-      formData.append('file', imageFile);
-      const { data } = await axios.post(CROP_DOCTOR_API, formData, {
+      // Frontend field name must be "image" to match multer.single('image') on the backend.
+      formData.append('image', imageFile);
+      const { data } = await api.post('/ai/crop-doctor', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 30000,
       });
-      setResult(normalizeResponse(data));
+      // Backend returns ApiResponse: { success, statusCode, message, data }. ML result is in data.data (top_prediction + alternatives).
+      const payload = data?.data !== undefined ? data.data : data;
+      setResult(normalizeResponse(payload));
     } catch (err) {
       const message =
+        err.response?.data?.message ||
         err.response?.data?.detail ||
         (typeof err.response?.data === 'string' ? err.response.data : null) ||
         err.message ||
@@ -92,6 +94,16 @@ const CropDoctor = () => {
 
   const normalizeResponse = (data) => {
     if (!data || typeof data !== 'object') return { disease_name: 'Unknown', confidence: 0, status: 'unknown', recommendation: '' };
+    // Backend ML returns { top_prediction: { plant, condition, is_healthy, confidence (0-100), suggestion }, alternatives }.
+    const top = data.top_prediction;
+    if (top && typeof top === 'object') {
+      return {
+        disease_name: top.condition ?? top.plant ?? 'Unknown',
+        confidence: (typeof top.confidence === 'number' ? top.confidence : parseFloat(top.confidence) || 0) / 100,
+        status: top.is_healthy ? 'healthy' : 'affected',
+        recommendation: top.suggestion ?? '',
+      };
+    }
     return {
       disease_name: data.disease_name ?? data.disease ?? data.class ?? 'Unknown',
       confidence: typeof data.confidence === 'number' ? data.confidence : parseFloat(data.confidence) || 0,

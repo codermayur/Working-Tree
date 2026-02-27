@@ -29,6 +29,7 @@
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
     "firebase-admin": "^12.0.0",
+    "form-data": "^4.0.5",
     "groq-sdk": "^0.37.0",
     "helmet": "^7.1.0",
     "hpp": "^0.2.3",

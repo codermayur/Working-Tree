@@ -1,6 +1,7 @@
 const asyncHandler = require('../../utils/asyncHandler');
 const ApiResponse = require('../../utils/ApiResponse');
 const ApiError = require('../../utils/ApiError');
+const logger = require('../../config/logger');
 const aiService = require('./ai.service');
 
 const ask = asyncHandler(async (req, res) => {
@@ -86,8 +87,34 @@ const askStream = asyncHandler(async (req, res) => {
   }
 });
 
+const ALLOWED_IMAGE_MIMETYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+
+const cropDoctorPredict = asyncHandler(async (req, res) => {
+  // Debug: log what we received (req.body is empty for multipart; req.file has the upload)
+  logger.info('[crop-doctor] request received', {
+    hasFile: !!req.file,
+    bodyKeys: req.body ? Object.keys(req.body) : [],
+    fileField: req.file ? req.file.fieldname : null,
+    mimetype: req.file ? req.file.mimetype : null,
+    size: req.file && req.file.buffer ? req.file.buffer.length : 0,
+  });
+
+  if (!req.file) {
+    const message = 'No image was uploaded. Send the image as multipart/form-data with field name "image".';
+    throw new ApiError(400, message);
+  }
+  const mimetype = (req.file.mimetype || '').toLowerCase();
+  if (!ALLOWED_IMAGE_MIMETYPES.includes(mimetype)) {
+    const message = `Unsupported image type: "${req.file.mimetype}". Only JPG and PNG are supported.`;
+    throw new ApiError(400, message);
+  }
+  const result = await aiService.predictCropDisease(req.file.buffer, req.file.mimetype);
+  res.status(200).json(new ApiResponse(200, result, 'Prediction successful'));
+});
+
 module.exports = {
   ask,
   askStream,
   chat,
+  cropDoctorPredict,
 };
