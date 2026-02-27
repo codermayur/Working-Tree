@@ -2146,6 +2146,57 @@ const HomePage = () => {
                 </div>
               </div>
 
+              {/* Welcome hero / intro */}
+              <div className="card overflow-hidden mb-3 bg-gradient-to-r from-green-50 via-emerald-50 to-sky-50 dark:from-gray-900 dark:via-emerald-900/40 dark:to-slate-900 border border-green-100/70 dark:border-emerald-800/40 shadow-md">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 p-4 sm:p-5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] uppercase tracking-[0.16em] font-semibold text-green-700/80 dark:text-green-400/80 mb-1">
+                      Welcome back{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''} 👋
+                    </p>
+                    <h1 className="text-[18px] sm:text-[20px] md:text-[22px] font-extrabold text-gray-900 dark:text-gray-50 leading-snug">
+                      Grow smarter with your farming community, AI assistant & live insights.
+                    </h1>
+                    <p className="mt-2 text-[12px] sm:text-[13px] text-gray-600 dark:text-gray-400 max-w-xl">
+                      See what other farmers are doing, get quick answers to your crop doubts, and stay on top of weather and market changes for your village.
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => navigate('/weather')}
+                        className="btn inline-flex items-center gap-1.5 py-2 px-3.5 rounded-full bg-white/80 dark:bg-gray-900/70 border border-emerald-200/80 dark:border-emerald-700/50 text-[12px] font-semibold text-emerald-700 dark:text-emerald-300 shadow-sm hover:bg-emerald-50/80 dark:hover:bg-emerald-900/40"
+                      >
+                        <Droplet size={14} />
+                        Today&apos;s Weather
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/market')}
+                        className="btn inline-flex items-center gap-1.5 py-2 px-3.5 rounded-full bg-emerald-600 text-white text-[12px] font-semibold shadow-[0_4px_14px_rgb(16_185_129/0.45)] hover:bg-emerald-700 hover:-translate-y-[1px]"
+                      >
+                        <TrendingUp size={14} />
+                        Check Market Prices
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowAIChat(true)}
+                        className="btn inline-flex items-center gap-1.5 py-2 px-3.5 rounded-full bg-emerald-50/80 dark:bg-emerald-900/30 text-[12px] font-semibold text-emerald-800 dark:text-emerald-200 border border-emerald-100/80 dark:border-emerald-800/70"
+                      >
+                        <Sparkles size={14} />
+                        Ask Khetibari Assistant
+                      </button>
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex flex-col items-center justify-center gap-2 pr-1">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                      <span className="text-2xl">🌾</span>
+                    </div>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 text-center max-w-[120px] leading-snug">
+                      Your personalised home for all farming updates.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Composer bar */}
               {currentUser && <PostComposerBar user={currentUser} onOpenModal={() => setShowComposer(true)} />}
 

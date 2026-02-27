@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, Users, Briefcase, MessageSquare, AlertCircle, User, Settings, Menu, LogIn, CloudRain, BarChart2, Leaf, Award, Shield } from 'lucide-react';
+import { Home, Users, Briefcase, MessageSquare, AlertCircle, User, Settings, Menu, LogIn, CloudRain, BarChart2, Leaf, Award, Shield, Landmark } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 // ============================================================================
@@ -22,6 +22,7 @@ const LeftSidebar = ({ open, setOpen }) => {
     { id: 'home', icon: Home, labelKey: 'nav.home', route: '/' },
     { id: 'network', icon: Users, labelKey: 'nav.network', route: '/network' },
     { id: 'jobs', icon: Briefcase, labelKey: 'nav.opportunities', badge: 'New', route: '/opportunities' },
+    { id: 'schemes', icon: Landmark, labelKey: 'nav.schemes', route: '/schemes' },
     { id: 'messages', icon: MessageSquare, labelKey: 'nav.messages', route: '/messages' },
     { id: 'notifications', icon: AlertCircle, labelKey: 'nav.alerts', route: '/alerts' },
     { id: 'weather', icon: CloudRain, labelKey: 'nav.weather', route: '/weather' },
@@ -36,6 +37,7 @@ const LeftSidebar = ({ open, setOpen }) => {
     if (path === '/' || path === '/feed') return 'home';
     if (path.startsWith('/network')) return 'network';
     if (path.startsWith('/opportunities') || path.startsWith('/jobs')) return 'jobs';
+    if (path.startsWith('/schemes')) return 'schemes';
     if (path.startsWith('/messages')) return 'messages';
     if (path.startsWith('/alerts') || path.startsWith('/notifications')) return 'notifications';
     if (path.startsWith('/weather')) return 'weather';

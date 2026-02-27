@@ -7,6 +7,10 @@ const mongoSanitize = require('express-mongo-sanitize');
 const morgan = require('morgan');
 const hpp = require('hpp');
 
+if (!process.env.JWT_SECRET && process.env.NODE_ENV !== 'test') {
+  throw new Error('JWT_SECRET environment variable is required for authentication. Set it in .env (see .env.example).');
+}
+
 const { generalLimiter } = require('./middlewares/rateLimit.middleware');
 const errorHandler = require('./middlewares/error.middleware');
 
@@ -29,6 +33,7 @@ const expertsRoutes = require('./modules/experts/experts.routes');
 const accountRoutes = require('./modules/account/account.routes');
 const newsRoutes = require('./modules/news/news.routes');
 const apitubeRoutes = require('./modules/apitube/apitube.routes');
+const opportunityRoutes = require('./modules/opportunity/opportunity.routes');
 
 const app = express();
 
@@ -79,6 +84,7 @@ app.use('/api/v1/experts', expertsRoutes);
 app.use('/api/v1/account', accountRoutes);
 app.use('/api/v1/news', newsRoutes);
 app.use('/api/v1/apitube', apitubeRoutes);
+app.use('/api/v1/opportunities', opportunityRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

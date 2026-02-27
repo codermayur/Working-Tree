@@ -50,6 +50,7 @@ i18n
     resources,
     fallbackLng: DEFAULT_LANG,
     supportedLngs: SUPPORTED_LANGS,
+    showSupportNotice: false,
     interpolation: {
       escapeValue: false,
     },

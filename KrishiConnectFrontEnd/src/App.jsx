@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -12,6 +12,7 @@ import HomePage from './pages/HomePage'
 import AlertsPage from './pages/AlertsPage'
 import MessagesPage from './pages/MessagesPage'
 import OpportunitiesPage from './pages/OpportunitiesPage'
+import OpportunityMarketplacePage from './pages/OpportunityMarketplacePage'
 import ProfilePage from './pages/ProfilePage'
 import NetworkPage from './pages/NetworkPage'
 import SettingsPage from './pages/SettingsPage'
@@ -24,6 +25,9 @@ import ManageAdmins from './pages/admin/ManageAdmins'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
+
+const SchemesPage = lazy(() => import('./pages/schemes/SchemesPage'))
+const SchemeDetailPage = lazy(() => import('./pages/schemes/SchemeDetailPage'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,7 +71,7 @@ function App() {
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/notifications" element={<AlertsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
-          <Route path="/opportunities" element={<div><center><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>Opportunities page is coming soon...</center></div>} />
+          <Route path="/opportunities" element={<OpportunityMarketplacePage />} />
           <Route path="/jobs" element={<OpportunitiesPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
@@ -76,6 +80,16 @@ function App() {
           <Route path="/settings/privacy" element={<PrivacySecurityPage />} />
           <Route path="/weather" element={<WeatherPage />} />
           <Route path="/market" element={<MarketPage />} />
+          <Route path="/schemes" element={
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><span className="text-gray-500">Loading…</span></div>}>
+              <SchemesPage />
+            </Suspense>
+          } />
+          <Route path="/schemes/:slug" element={
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><span className="text-gray-500">Loading…</span></div>}>
+              <SchemeDetailPage />
+            </Suspense>
+          } />
           <Route path="/crop-doctor" element={<CropDoctor />} />
           <Route path="/admin/expert-applications" element={<AdminExpertApplicationsPage />} />
           <Route path="/admin/manage-admins" element={<ManageAdmins />} />

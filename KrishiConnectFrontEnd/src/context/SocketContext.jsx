@@ -8,35 +8,20 @@ import { io } from 'socket.io-client';
 import { authStore } from '../store/authStore';
 
 /**
-<<<<<<< HEAD
- * Single Socket.IO client for chat. Connects with JWT on auth.
- * In dev: connect directly to backend (port 5005) to avoid Vite ws proxy write ECONNABORTED.
- * In prod: VITE_API_URL origin or window.location.origin.
+ * Socket URL: prefer `import.meta.env.VITE_API_URL` (origin), fallback to localhost:5005.
  */
 function getSocketUrl() {
-  if (import.meta.env.DEV && typeof window !== 'undefined') {
-    return 'http://localhost:5005';
-  }
-=======
- * Socket URL: connect to backend server (VITE_API_URL origin) so WebSocket hits backend directly.
- * Fallback to same origin if VITE_API_URL not set.
- */
-function getSocketUrl() {
->>>>>>> 4197485 (Model integrated)
-  try {
-    const base = import.meta.env.VITE_API_URL || '';
-    if (base) {
-      const u = new URL(base);
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    try {
+      const u = new URL(envUrl);
       return u.origin;
+    } catch {
+      // If VITE_API_URL is not a full URL, use it as-is.
+      return envUrl;
     }
-  } catch (_) {}
-  if (import.meta.env.DEV && typeof window !== 'undefined') {
-    return window.location.origin;
   }
-  if (typeof window !== 'undefined') {
-    return window.location.origin;
-  }
-  return '';
+  return 'http://localhost:5005';
 }
 
 function getStoredToken() {

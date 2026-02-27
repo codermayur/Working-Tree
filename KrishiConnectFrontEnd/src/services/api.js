@@ -14,6 +14,7 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 /** Read token from localStorage (same key as auth store). Handles both raw string and JSON-stringified value. */
@@ -41,7 +42,7 @@ api.interceptors.request.use(
   (err) => Promise.reject(err)
 );
 
-/** On 401: clear auth and redirect to login (token missing or expired). Skip for /auth/login so wrong credentials show message instead of redirect. */
+/** On 401: clear auth and redirect to login (token missing or expired). Skip for login URL so wrong credentials show message instead of redirect. */
 api.interceptors.response.use(
   (response) => response,
   (err) => {
@@ -68,14 +69,16 @@ api.interceptors.response.use(
 
 /**
  * Request helper for services. Uses global api instance (with token + 401 handling).
+ * Path is normalized so axios appends to baseURL correctly (no leading slash),
+ * avoiding dropped /api/v1 when baseURL is e.g. http://localhost:5005/api/v1.
  * @param {string} method - GET, POST, PATCH, PUT, DELETE
- * @param {string} path - e.g. '/users/me' (no leading slash or with, both work)
+ * @param {string} path - e.g. 'users/me' or '/users/me'
  * @param {object|FormData|null} data - JSON body or null for GET
  * @param {{ body?: FormData, headers?: object }} opts - optional body (FormData) or headers
  * @returns {{ data: any }} - same shape as before for compatibility
  */
 export async function request(method, path, data = null, opts = {}) {
-  const url = path.startsWith('/') ? path : `/${path}`;
+  const url = path.startsWith('/') ? path.slice(1) : path;
   const bodyFromOpts = opts.body;
   const isFormData = bodyFromOpts instanceof FormData;
 
@@ -94,6 +97,10 @@ export async function request(method, path, data = null, opts = {}) {
     config.headers['Content-Type'] = false;
   } else if (data != null && ['POST', 'PUT', 'PATCH'].includes(method) && !(data instanceof FormData)) {
     config.data = data;
+  }
+
+  if (typeof opts.onUploadProgress === 'function') {
+    config.onUploadProgress = opts.onUploadProgress;
   }
 
   const response = await api.request(config);
