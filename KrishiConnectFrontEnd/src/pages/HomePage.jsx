@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, memo, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo, useMemo, lazy, Suspense } from 'react';
 import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -20,6 +20,8 @@ import { useWeather, INDIAN_CITIES } from '../hooks/useWeather';
 import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
 import { useWeatherCoords } from '../context/WeatherContext';
 import { newsService } from '../services/news.service';
+
+const HomeWidgets = lazy(() => import('../components/home/HomeWidgets'));
 
 // ============================================================================
 // API: postService + userService; demo fallback for weather/market/news
@@ -2296,8 +2298,17 @@ const HomePage = () => {
 
             {/* Right sidebar */}
             <div style={{ display: 'none' }} className="right-col">
+              <Suspense fallback={<div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 animate-pulse h-48" />}>
+                <HomeWidgets />
+              </Suspense>
               <RightSidebar />
             </div>
+          </div>
+          {/* Opportunities & Schemes preview — visible on tablet/mobile below feed when right-col is hidden */}
+          <div className="xl:hidden w-full mt-4">
+            <Suspense fallback={<div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 animate-pulse h-48 max-w-sm mx-auto" />}>
+              <HomeWidgets />
+            </Suspense>
           </div>
         </div>
       </div>
