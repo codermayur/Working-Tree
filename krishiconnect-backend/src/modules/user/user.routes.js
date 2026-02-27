@@ -26,7 +26,7 @@ router.post(
     if (req.file) {
       try {
         req.uploadResult = await uploadToCloudinary(req.file.buffer, {
-          folder: 'krishiconnect/avatars',
+          folder: 'khetibari/avatars',
         });
       } catch (err) {
         return next(err);
@@ -52,7 +52,7 @@ router.post(
     }
     try {
       req.uploadResult = await uploadToCloudinary(req.file.buffer, {
-        folder: 'krishiconnect/profile-photos',
+        folder: 'khetibari/profile-photos',
       });
     } catch (err) {
       return next(err);
@@ -72,7 +72,7 @@ router.post(
       return uploadSingleBackground('background')(req, res, (err) => {
         if (err) return next(err);
         if (req.file) {
-          uploadToCloudinary(req.file.buffer, { folder: 'krishiconnect/backgrounds' })
+          uploadToCloudinary(req.file.buffer, { folder: 'khetibari/backgrounds' })
             .then((result) => {
               req.uploadResult = result;
               next();

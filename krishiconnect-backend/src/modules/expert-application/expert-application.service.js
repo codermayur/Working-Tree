@@ -140,7 +140,7 @@ async function approve(applicationId, adminUserId) {
     type: 'system',
     entityId: app._id,
     entityType: 'expert_application',
-    message: 'Your expert application has been approved. You are now an expert on KrishiConnect!',
+    message: 'Your expert application has been approved. You are now an expert on Khetibari!',
     metadata: { roleUpgraded: true },
   }).catch(() => {});
 

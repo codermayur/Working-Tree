@@ -1,5 +1,5 @@
 /**
- * i18n setup for KrishiConnect. Supports en, hi, mr.
+ * i18n setup for Khetibari. Supports en, hi, mr.
  * Language is persisted in localStorage (key: app_language) and synced with user preferences when logged in.
  */
 import i18n from 'i18next';

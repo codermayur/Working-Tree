@@ -71,7 +71,7 @@ const uploadChatMedia = asyncHandler(async (req, res) => {
 
   if (IMAGE_MIMES.includes(mimetype)) {
     const result = await uploadToCloudinary(buffer, {
-      folder: 'krishiconnect/chat',
+      folder: 'khetibari/chat',
       resourceType: 'image',
     });
     return res.status(200).json(

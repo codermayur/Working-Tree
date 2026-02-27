@@ -6,7 +6,7 @@ const uploadToCloudinary = (buffer, options = {}) =>
   new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: options.folder || 'krishiconnect',
+        folder: options.folder || 'khetibari',
         resource_type: options.resourceType || 'auto',
         ...options,
       },

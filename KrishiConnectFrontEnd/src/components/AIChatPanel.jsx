@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useSpeechToText, getSpeechRecognitionErrorMessage } from '../hooks/useSpeechToText';
 
 // ============================================================================
-// AI CHAT PANEL – KrishiConnect Assistant (Groq); streaming via POST /api/v1/ai/ask/stream
+// AI CHAT PANEL – Khetibari Assistant (Groq); streaming via POST /api/v1/ai/ask/stream
 // ============================================================================
 
 const MIN_QUESTION_LENGTH = 10;
@@ -216,7 +216,7 @@ const AIChatPanel = ({ onClose, className = '' }) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">Krishi Assistant</h3>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">Khetibari Assistant</h3>
         <button
           type="button"
           onClick={onClose}

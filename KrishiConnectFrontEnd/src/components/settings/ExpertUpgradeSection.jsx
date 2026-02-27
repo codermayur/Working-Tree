@@ -226,7 +226,7 @@ export default function ExpertUpgradeSection({ user, myApplication, onRefresh, o
   if (role === 'expert' || role === 'admin') {
     return (
       <SectionCard>
-        <SectionHeader icon={Award} title="Expert Access" subtitle="You have expert-level access on KrishiConnect" />
+        <SectionHeader icon={Award} title="Expert Access" subtitle="You have expert-level access on Khetibari" />
         <div className="px-5 sm:px-6 py-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800">
             <CheckCircle size={18} /> You are an expert

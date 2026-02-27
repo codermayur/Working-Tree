@@ -62,7 +62,7 @@ const LeftSidebar = ({ open, setOpen }) => {
       >
         {/* Logo */}
         <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between min-h-[64px] gap-2">
-          {open && <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap truncate">🌾 KrishiConnect</span>}
+          {open && <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap truncate">🌾 Khetibari</span>}
           <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
             <button
               onClick={() => setOpen(!open)}
@@ -188,7 +188,7 @@ const LeftSidebar = ({ open, setOpen }) => {
         <aside className="lg:hidden fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 z-50 w-72 shadow-2xl animate-slide-in">
           {/* Logo */}
           <div className="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between min-h-[64px]">
-            <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap">🌾 KrishiConnect</span>
+            <span className="text-xl font-black text-green-700 dark:text-green-400 whitespace-nowrap">🌾 Khetibari</span>
             <button
               onClick={() => setOpen(false)}
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 dark:text-gray-400"

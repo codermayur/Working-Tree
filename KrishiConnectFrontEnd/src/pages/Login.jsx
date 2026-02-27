@@ -109,7 +109,7 @@ export default function Login() {
             {/* Logo and Title */}
             <div className="relative h-full flex flex-col items-center justify-center text-white">
               <div className="text-5xl mb-2 animate-bounce">🌾</div>
-              <h1 className="text-2xl font-bold">KrishiConnect</h1>
+              <h1 className="text-2xl font-bold">Khetibari</h1>
               <p className="text-sm text-emerald-100 mt-1">Welcome back, Farmer!</p>
             </div>
           </div>

@@ -10,7 +10,7 @@ const uploadCertificate = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'No file uploaded. Please upload a PDF, JPG, or PNG file.');
   }
   const result = await uploadToCloudinary(req.file.buffer, {
-    folder: 'krishiconnect/certificates',
+    folder: 'khetibari/certificates',
     resourceType: req.file.mimetype === 'application/pdf' ? 'raw' : 'image',
   });
   const certificateFileUrl = result.url || result.secure_url;

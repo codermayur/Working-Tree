@@ -1,7 +1,7 @@
 {
-  "name": "krishiconnect-backend",
+  "name": "khetibari-backend",
   "version": "1.0.0",
-  "description": "KrishiConnect - Social platform for Indian farmers",
+  "description": "Khetibari - Social platform for Indian farmers",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",

@@ -1,4 +1,4 @@
-const APP_NAME = process.env.SMTP_FROM_NAME || 'KrishiConnect';
+const APP_NAME = process.env.SMTP_FROM_NAME || 'Khetibari';
 const APP_URL = process.env.APP_URL || process.env.CLIENT_URL || 'http://localhost:3000';
 
 function getRegistrationOTPTemplate(userName, otpCode, expiryMinutes = 10) {

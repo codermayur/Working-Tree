@@ -1,4 +1,4 @@
-# KrishiConnect Backend
+# Khetibari Backend
 
 Production-grade social platform backend for Indian farmers.
 

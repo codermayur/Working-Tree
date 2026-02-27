@@ -32,7 +32,7 @@
     "preferences": "Preferences",
     "expertUpgrade": "Upgrade to Expert",
     "dangerZone": "Danger Zone",
-    "preferencesSubtitle": "Customize your KrishiConnect experience",
+    "preferencesSubtitle": "Customize your Khetibari experience",
     "theme": "Theme",
     "themeLight": "Light",
     "themeDark": "Dark",
@@ -130,7 +130,7 @@
     "emptyHint": "Connect with farmers to start chatting",
     "searchPlaceholder": "Search conversations...",
     "typePlaceholder": "Type a message...",
-    "welcome": "Welcome to KrishiConnect Messages",
+    "welcome": "Welcome to Khetibari Messages",
     "selectConversation": "Select a conversation to start chatting with farmers"
   },
   "weather": {

@@ -20,7 +20,7 @@ const sendOTP = async (phoneNumber, otp) => {
     const formattedPhone = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
 
     await twilio.messages.create({
-      body: `Your KrishiConnect OTP is: ${otp}. Valid for 10 minutes. Do not share with anyone.`,
+      body: `Your Khetibari OTP is: ${otp}. Valid for 10 minutes. Do not share with anyone.`,
       from: process.env.TWILIO_PHONE_NUMBER,
       to: formattedPhone,
     });

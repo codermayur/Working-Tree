@@ -163,7 +163,7 @@ const NAV_SECTIONS = [
 // SHARED MICRO-COMPONENTS
 // ============================================================================
 
-/** Animated toggle switch matching the green/white KrishiConnect palette */
+/** Animated toggle switch matching the green/white Khetibari palette */
 const Toggle = ({ checked, onChange, disabled = false }) => (
   <button
     role="switch"
@@ -893,7 +893,7 @@ const DangerSection = ({ onToast }) => {
               {deleteStep === 1 && (
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl p-4 space-y-1">
                   <p className="text-sm font-bold text-red-700 dark:text-red-300">This action cannot be undone:</p>
-                  {['Your profile and all personal information', 'All your posts, comments & media', 'Your connections and messages', 'Access to all KrishiConnect features'].map(item => (
+                  {['Your profile and all personal information', 'All your posts, comments & media', 'Your connections and messages', 'Access to all Khetibari features'].map(item => (
                     <div key={item} className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400">
                       <X size={11} className="mt-0.5 flex-shrink-0" />{item}
                     </div>
@@ -960,7 +960,7 @@ const DangerSection = ({ onToast }) => {
           <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
             <div>
               <p className="text-sm font-bold text-red-600 dark:text-red-400">Delete Account</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Permanently erase all your data from KrishiConnect</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Permanently erase all your data from Khetibari</p>
             </div>
             <button onClick={() => setShowDeleteModal(true)}
               className="flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-700 rounded-xl text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/50 transition">
@@ -1070,7 +1070,7 @@ const SettingsPage = () => {
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 lg:hidden">{activeLabel}</p>
           </div>
           <span className="text-xs bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-lg font-bold border border-green-100 dark:border-green-800">
-            🌾 KrishiConnect
+            🌾 Khetibari
           </span>
         </div>
       </div>

@@ -27,6 +27,8 @@ const errorHandler = (err, req, res, next) => {
   const payload = {
     success: false,
     message: error.message,
+    statusCode: error.statusCode,
+    timestamp: error.timestamp || new Date().toISOString(),
     ...(error.errors && error.errors.length ? { errors: error.errors } : {}),
   };
 

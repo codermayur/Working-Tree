@@ -74,7 +74,7 @@ const CURRENT_USER = {
   verified: true, profileViewers: 60, postImpressions: 27,
   education: 'Agricultural Science Degree, IARI New Delhi',
   experience: '12 years in organic farming',
-  website: 'www.krishiconnect.farm',
+  website: 'www.khetibari.farm',
   joinedDate: 'Joined February 2022',
   connections: [
     { _id: 'u2', name: 'Priya Singh', role: 'Vegetable Farmer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop' },
@@ -973,7 +973,7 @@ const PostCard = memo(({ post, currentUser, onPostUpdate, onPostDeleted, onAutho
       const { shareUrl } = await api.sharePost(post._id);
       setSharesCount(c => c + 1);
       if (navigator.clipboard) await navigator.clipboard.writeText(shareUrl);
-      if (navigator.share) await navigator.share({ title: 'KrishiConnect Post', url: shareUrl });
+      if (navigator.share) await navigator.share({ title: 'Khetibari Post', url: shareUrl });
     } catch { }
   };
 
@@ -1533,7 +1533,8 @@ const RightSidebar = () => {
       setNewsLoading(true);
       setNewsError(null);
       try {
-        const list = await newsService.getAgricultureNews();
+        const apitube = await newsService.getApitubeNews({ q: 'agriculture', limit: 20 });
+        const list = apitube?.data ?? await newsService.getAgricultureNews();
         const mapped = Array.isArray(list) && list.length > 0
           ? list.map((n) => ({ ...n, category: n.source || 'Agriculture' }))
           : [];
@@ -1552,7 +1553,8 @@ const RightSidebar = () => {
     setNewsRefreshing(true);
     setNewsError(null);
     try {
-      const list = await newsService.getAgricultureNews();
+      const apitube = await newsService.getApitubeNews({ q: 'agriculture', limit: 20 });
+      const list = apitube?.data ?? await newsService.getAgricultureNews();
       const mapped = Array.isArray(list) && list.length > 0
         ? list.map((n) => ({ ...n, category: n.source || 'Agriculture' }))
         : [];
@@ -1784,7 +1786,7 @@ const RightSidebar = () => {
           <span>🔥</span> Trending
         </h3>
         <div className="flex flex-col gap-0.5">
-          {['#OrganicFarming', '#SustainableAg', '#FarmToTable', '#AgriculturalTech', '#KrishiIndia'].map((tag) => (
+          {['#OrganicFarming', '#SustainableAg', '#FarmToTable', '#AgriculturalTech', '#Khetibari'].map((tag) => (
             <button
               key={tag}
               type="button"
@@ -2084,7 +2086,7 @@ const HomePage = () => {
                   {/* Info */}
                   <div className="px-4 pb-5 text-center">
                     <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                      <span className="font-bold text-base text-gray-900 dark:text-gray-100">Krishi Assistant</span>
+                      <span className="font-bold text-base text-gray-900 dark:text-gray-100">Khetibari Assistant</span>
                       <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-700/50">AI</span>
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug">
@@ -2111,7 +2113,7 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={() => setShowAIChat(prev => !prev)}
-                      aria-label="Open Krishi Assistant chat"
+                      aria-label="Open Khetibari Assistant chat"
                       className="w-full mt-4 py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-[0_3px_12px_rgb(22_163_74/0.35)] hover:shadow-[0_6px_20px_rgb(22_163_74/0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     >
                       <MessageSquare size={16} strokeWidth={2.5} /> Ask a question
@@ -2132,7 +2134,7 @@ const HomePage = () => {
               {/* Mobile header */}
               <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-3 sm:p-4 mb-3 shadow-sm mobile-header transition-colors duration-200">
                 <span className="font-semibold text-lg text-green-700 dark:text-green-400" style={{ fontFamily: 'Lora, Georgia, serif' }}>
-                  🌾 KrishiConnect
+                  🌾 Khetibari
                 </span>
                 <div className="flex gap-2">
                   <button type="button" className="btn p-2.5 rounded-xl text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center">

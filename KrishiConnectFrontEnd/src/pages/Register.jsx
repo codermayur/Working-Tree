@@ -228,7 +228,7 @@ export default function Register() {
             {/* Logo and Title */}
             <div className="relative h-full flex flex-col items-center justify-center text-white">
               <div className="text-5xl mb-2 animate-bounce">🌾</div>
-              <h1 className="text-2xl sm:text-3xl font-bold">Join KrishiConnect</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">Join Khetibari</h1>
               <p className="text-sm text-emerald-100 mt-2">Start your farming journey today</p>
             </div>
 

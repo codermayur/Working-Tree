@@ -28,6 +28,7 @@ const searchRoutes = require('./modules/search/search.routes');
 const expertsRoutes = require('./modules/experts/experts.routes');
 const accountRoutes = require('./modules/account/account.routes');
 const newsRoutes = require('./modules/news/news.routes');
+const apitubeRoutes = require('./modules/apitube/apitube.routes');
 
 const app = express();
 
@@ -77,6 +78,7 @@ app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/experts', expertsRoutes);
 app.use('/api/v1/account', accountRoutes);
 app.use('/api/v1/news', newsRoutes);
+app.use('/api/v1/apitube', apitubeRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -36,7 +36,7 @@
 
 ## How to Test
 
-1. **Backend running** (e.g. `npm run dev` in `krishiconnect-backend`) with MongoDB and at least one `MarketPrice` document (or run a seed script).
+1. **Backend running** (e.g. `npm run dev` in `khetibari-backend`) with MongoDB and at least one `MarketPrice` document (or run a seed script).
 2. **Frontend** `VITE_API_URL` must point to that backend (e.g. `http://localhost:5005/api/v1`).
 3. Open **Market** page → **Price Table** tab. You should see:
    - Loading skeleton, then product cards, or

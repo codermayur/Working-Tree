@@ -19,7 +19,7 @@ const Layout = () => {
         notificationCount={notificationCount}
       />
 
-      {/* Main Content - same gray background as KrishiConnect feed area */}
+      {/* Main Content - same gray background as Khetibari feed area */}
       <div className={`transition-all duration-300 bg-gray-50 min-h-screen ${sidebarOpen ? 'lg:ml-60' : 'lg:ml-20'}`}>
         <Outlet context={{ sidebarOpen, setSidebarOpen }} />
       </div>

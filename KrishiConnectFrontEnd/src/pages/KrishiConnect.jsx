@@ -68,7 +68,7 @@ const CURRENT_USER = {
   verified: true, profileViewers: 60, postImpressions: 27,
   education: 'Agricultural Science Degree, IARI New Delhi',
   experience: '12 years in organic farming',
-  website: 'www.krishiconnect.farm',
+  website: 'www.khetibari.farm',
   joinedDate: 'Joined February 2022',
   connections: [
     { _id: 'u2', name: 'Priya Singh', role: 'Vegetable Farmer', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop' },
@@ -974,7 +974,7 @@ const PostCard = memo(({ post, currentUser, onPostUpdate, onPostDeleted }) => {
       const { shareUrl } = await api.sharePost(post._id);
       setSharesCount(c => c + 1);
       if (navigator.clipboard) await navigator.clipboard.writeText(shareUrl);
-      if (navigator.share) await navigator.share({ title: 'KrishiConnect Post', url: shareUrl });
+      if (navigator.share) await navigator.share({ title: 'Khetibari Post', url: shareUrl });
     } catch { }
   };
 
@@ -1745,7 +1745,7 @@ const RightSidebar = () => {
           <span>🔥</span> Trending
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {['#OrganicFarming', '#SustainableAg', '#FarmToTable', '#AgriculturalTech', '#KrishiIndia'].map((tag, i) => (
+          {['#OrganicFarming', '#SustainableAg', '#FarmToTable', '#AgriculturalTech', '#Khetibari'].map((tag, i) => (
             <button key={tag} onClick={() => navigate(`/tag/${tag.slice(1)}`)} className="btn" style={{
               width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '9px 10px', borderRadius: 11, color: '#15803d',
@@ -1770,7 +1770,7 @@ const RightSidebar = () => {
 // ============================================================================
 // MAIN APP
 // ============================================================================
-const KrishiConnect = () => {
+const Khetibari = () => {
   const navigate = useNavigate();
   const [activeNav, setActiveNav] = useState('home');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -2056,7 +2056,7 @@ const KrishiConnect = () => {
                   </div>
                   {/* Info */}
                   <div style={{ padding: '0 16px 16px', textAlign: 'center' }}>
-                    <p style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>Krishi Assistant</p>
+                    <p style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>Khetibari Assistant</p>
                     <p style={{ fontSize: 12, color: '#64748b', marginTop: 3, lineHeight: 1.45 }}>
                       Guidance & doubt solving for farming, crops & weather
                     </p>
@@ -2111,7 +2111,7 @@ const KrishiConnect = () => {
                 boxShadow: '0 1px 4px rgb(0 0 0 / 0.05)',
               }} className="mobile-header">
                 <span style={{ fontFamily: 'Lora, Georgia, serif', fontSize: 18, fontWeight: 600, color: '#15803d' }}>
-                  🌾 KrishiConnect
+                  🌾 Khetibari
                 </span>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="btn" style={{
@@ -2340,4 +2340,4 @@ const KrishiConnect = () => {
   );
 };
 
-export default KrishiConnect;
+export default Khetibari;

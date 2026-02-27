@@ -3,7 +3,7 @@ const logger = require('../config/logger');
 const { getRedis } = require('../config/redis');
 
 async function sendEmail(recipientEmail, subject, htmlBody, textBody = '') {
-  const fromName = process.env.SMTP_FROM_NAME || 'KrishiConnect';
+  const fromName = process.env.SMTP_FROM_NAME || 'Khetibari';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
 
   if (!fromEmail) {

@@ -65,6 +65,11 @@ async function seedProfileAdmin() {
 
 const startServer = async () => {
   try {
+    if (process.env.APITUBE_KEY || process.env.APITUBE_BASE_URL) {
+      const { validateApitubeEnv } = require('./config/validateApitubeEnv');
+      validateApitubeEnv();
+    }
+
     await connectDB();
     await seedDefaultAdmin();
     await seedProfileAdmin();
